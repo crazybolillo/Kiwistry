@@ -1,2 +1,2 @@
 # JAtomicModels
-Application that displays information about atoms and generates 2D models of them. Based on JavaFX.
+Application that displays information about atoms and generates 2D models of them. Based on JavaFX. The source code can be helpful for anyone trying to develop a Java application which deals with atoms, their attributes and their models. This application provides a simple embeeded database (sqlite3) that stores all the information about the atoms. It provides a very simple to use Java object which is initialized by simply typing out the atom´s name or atomic number. This object makes all the necessary queries to gather the atom´s attributes. A resizable Canvas can be created based on the atom. 
