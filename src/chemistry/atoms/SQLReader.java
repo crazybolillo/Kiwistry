@@ -3,6 +3,7 @@ package chemistry.atoms;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,8 +25,8 @@ public class SQLReader {
      */
     public static ObservableList<String> getAtomNames() throws Exception {
         
-        Connection con = DriverManager.getConnection("jdbc:sqlite:" +
-                SQLReader.class.getResource("atomos.db").getPath());
+        Connection con = DriverManager.getConnection("jdbc:sqlite::resource:" +
+                "chemistry/atoms/atomos.db");
         
         Statement stmt = con.createStatement();
         
@@ -39,6 +40,20 @@ public class SQLReader {
         }
         
         return retVal;
+    }
+    
+    /**
+     * Returns a connection to the read only embedded sqlite database found
+     * inside the compiled .jar
+     * @return Read only connection to the database contaning information
+     * about atoms.
+     * @throws SQLException If it can not find the resource which should be rare
+     * since the internals of the .jar should not be modified.
+     */
+    public static Connection getConnection() throws SQLException{
+        Connection con = DriverManager.getConnection("jdbc:sqlite::resource:" +
+                "chemistry/atoms/atomos.db");
+        return con;
     }
     
 }

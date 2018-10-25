@@ -1,10 +1,11 @@
 package chemistry.atoms;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,17 +18,16 @@ public class Atom {
     private String name;
     private double atomicMass;
     
-    private ArrayList<Integer> electronicConfig;
+    private List<Integer> electronicConfig;
     
     /**
      * 
      * @param atomNum
-     * @throws Exception 
+     * @throws SQLException 
      */
-    public Atom(int atomNum) throws Exception {
+    public Atom(int atomNum) throws SQLException {
         
-        Connection con = DriverManager.getConnection(
-                "jdbc:sqlite:" + this.getClass().getResource("atomos.db").toExternalForm());
+        Connection con = SQLReader.getConnection();
         
         PreparedStatement stmt = con.prepareStatement("SELECT * FROM atomos WHERE "
                 + "numero = ?");
@@ -39,7 +39,7 @@ public class Atom {
             results.close();
             stmt.close();
             con.close();
-            throw new Exception("No atom found for atomic number: " + atomNum);
+            throw new SQLException("No atom found for atomic number: " + atomNum);
         }
         
         else{
@@ -52,46 +52,25 @@ public class Atom {
         //Close result set
         results.close();
         
-        //Now get electronic configuration by querying the other table
-        stmt = con.prepareStatement("SELECT * FROM confelec WHERE "
-                + "numatomico = ?");
-        stmt.setInt(1, atomicNumber);
-        
-        ResultSet secResults = stmt.executeQuery();
-        
-        if(!secResults.isBeforeFirst()){
-            secResults.close();
-            stmt.close();
-            con.close();
-            throw new Exception("No electronic config found for atomic number: " + atomNum);
-        }
-        else{   
-            //Initialize array that will have electronic configuration
-            electronicConfig = new ArrayList<Integer>();
-            for(int x = 2; x < 9; x++) {
-                if(secResults.getInt(x) != 0) {
-                    electronicConfig.add(secResults.getInt(x));
-                }
-            }
-        }
-        
-        secResults.close();
+        this.setElectronicConfiguration(con);
+
         stmt.close();
         con.close();
     }
     
     /**
-     * 
-     * @param name
-     * @throws Exception 
+     * Creates an atom based on the name passed trough the parameters. Case 
+     * insensitive.
+     * @param name Name of the atom that will be created. For example, 'Hydrogen'
+     * @throws SQLException In case the name is not found inside the database. The
+     * biggest atom the list contains is Oganneson.
      */
-    public Atom(String name) throws Exception{
+    public Atom(String name) throws SQLException{
         
-        Connection con = DriverManager.getConnection(
-                "jdbc:sqlite:" + this.getClass().getResource("atomos.db").toExternalForm());
+        Connection con = SQLReader.getConnection();
         
         PreparedStatement stmt = con.prepareStatement("SELECT * FROM atomos WHERE "
-                + "nombre = ?");
+                + "nombre = ? COLLATE NOCASE");
         stmt.setString(1, name);
         
         ResultSet results = stmt.executeQuery();
@@ -100,7 +79,7 @@ public class Atom {
             results.close();
             stmt.close();
             con.close();
-            throw new Exception("No atom found for atomic number: " + name);
+            throw new SQLException("No atom found for atomic number: " + name);
         }
         
         else{
@@ -110,11 +89,27 @@ public class Atom {
             atomicMass = results.getDouble("masatomica");
         }
         
-        //Close result set
         results.close();
         
+        this.setElectronicConfiguration(con);
+        
+        stmt.close();
+        con.close();
+    }
+    
+    /**
+     * Gathers data on the electronic configuration of the atom and sets
+     * the electronic configuration field.
+     * @param con Open database connection to the embedded database containing
+     * the information.
+     * @throws SQLException If the ResultSet from the query is empty an exception
+     * will be thrown.
+     */
+    private void setElectronicConfiguration(Connection con) 
+            throws SQLException{
+        
         //Now get electronic configuration by querying the other table
-        stmt = con.prepareStatement("SELECT * FROM confelec WHERE "
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM confelec WHERE "
                 + "numatomico = ?");
         stmt.setInt(1, atomicNumber);
         
@@ -124,25 +119,19 @@ public class Atom {
             secResults.close();
             stmt.close();
             con.close();
-            throw new Exception("No electronic config found for atomic number: " + name);
+            throw new SQLException("No electronic config found for atomic number: " + name);
         }
-        else{   
-            //Initialize array that will have electronic configuration
-            electronicConfig = new ArrayList<Integer>();
-            for(int x = 2; x < 9; x++) {
-                if(secResults.getInt(x) != 0) {
-                    electronicConfig.add(secResults.getInt(x));
-                }
+
+        electronicConfig = new ArrayList<Integer>();
+        for(int x = 2; x < 9; x++) {
+            if(secResults.getInt(x) != 0) {
+                electronicConfig.add(secResults.getInt(x));
             }
         }
-        
-        secResults.close();
-        stmt.close();
-        con.close();
     }
     
     /**
-     * 
+     * Returns the atomic number (0-118) of the atom.
      * @return 
      */
     public int getAtomicNumber() {
@@ -150,7 +139,7 @@ public class Atom {
     }
     
     /**
-     * 
+     * Returns the symbol or abbreviation of the atom's name. 
      * @return 
      */
     public String getSymbol() {
@@ -158,7 +147,7 @@ public class Atom {
     }
     
     /**
-     * 
+     * Returns the name of the atom.
      * @return 
      */
     public String getName() {
@@ -166,18 +155,36 @@ public class Atom {
     }
     
     /**
-     * 
+     * Returns a double with the atomic mass of the atomic number. The amount
+     * of decimals the number may have can differ.
      * @return 
      */
     public double getAtomicMass() {
         return atomicMass;
     }
     
-    public long getNeutrons() {
-        return Math.round(atomicMass) - atomicNumber;
+    /**
+     * The amount of neutrons the atom has. Calculated by rounding the 
+     * atomci mass and substracting the atomic number. 
+     * @return 
+     */
+    public int getNeutrons() {
+        /*There is no data loss casting the result to an integer since the 
+        atomic mass is way smaller than the integer size limit.*/
+        return (int)atomicMass - atomicNumber;
     }
     
-    public ArrayList<Integer> getElectronicConfig() {
+    /**
+     * Returns a list representing the energy levels an atom has. The list will
+     * always contain at least one element. Each index represents a level and
+     * it contains the amount of electrons inside the specific level. As of 2018
+     * not atoms with more than 7 levels have been discovered so this method
+     * will always return a list with a size between 1 and 7. Do not confuse orbitals
+     * with levels.
+     * @return Integer list representing the atom's energy levels.
+     * Guaranted to always have at least one index.
+     */
+    public List<Integer> getElectronicConfig() {
         return electronicConfig;
     }
 }   

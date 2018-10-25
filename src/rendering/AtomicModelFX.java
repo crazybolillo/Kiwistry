@@ -1,11 +1,10 @@
 package rendering;
 
 import chemistry.atoms.Atom;
-import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.VPos;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -15,7 +14,7 @@ import javafx.scene.text.TextAlignment;
  *
  * @author https://github.com/AntonioBohne
  */
-public class AtomicModelFX extends Canvas{
+public class AtomicModelFX extends ResizableCanvas{
     
     /**
      * The following variables can be tweaked to change the proportions. By 
@@ -39,7 +38,7 @@ public class AtomicModelFX extends Canvas{
     
     private double electRad; //Electron´s radius
     
-    private ArrayList<Integer> levels;//Levels of energy (outside rings) the atom has
+    private List<Integer> levels;//Levels of energy (outside rings) the atom has
     
     private String symbol;
     
@@ -52,25 +51,16 @@ public class AtomicModelFX extends Canvas{
      */
     public AtomicModelFX(double width, Atom atomo) {
         
-        //For the atomic model to keep correct proportions it must be a square.
-        this.setWidth(width);
-        this.setHeight(width);
-        
-        this.setInternalWidth(width);
-        
-        //Set energy levles. Will be needed later to set the proportions.
+        super();
+        //Set energy levels. Will be needed later to set the proportions.
         levels = atomo.getElectronicConfig();
         symbol = atomo.getSymbol();
         
-        /**
-         * Set the changelisteners to the Canvas width and height. This will
-         * trigger if the Canvas size is changed. The resizable feature
-         * of this Canvas is usually implemented by binding the container´s size
-         * with the Canvas' size.
-         */
-        ResizingEvt listener = new ResizingEvt(); //Inner class
-        this.widthProperty().addListener(listener);
-        this.heightProperty().addListener(listener);
+        //For the atomic model to keep correct proportions it must be a square.
+        this.setWidth(width);
+        this.setHeight(width);
+        this.setInternalWidth(width);
+        
     }
     
     /**
@@ -86,47 +76,15 @@ public class AtomicModelFX extends Canvas{
     
     /**
      * Set the proportions for the different components of the atomic model. 
-     * @param nucl
-     * @param lvl
-     * @param elec 
+     * @param nucl Amount of area the nucleus will take.
+     * @param lvl Amount of area the electron levels will take
+     * @param elec Amount of area the electrons themselves will take.
      */
     public void setProportions(float nucl, float lvl, float elec) {
         nuclPercent = nucl;
         lvlPercent = lvl;
         electPercent = elec;
     }
-    
-    /**
-     * This method originally returned false but to make the Canvas resizable
-     * in case the user needs it the method has been overwritten and now returns
-     * true.
-     * @return Will always return true. 
-     */
-    @Override
-    public boolean isResizable() {  
-        return true;
-    }
-    
-    /**
-     * 
-     * @param width
-     * @return 
-     */
-    @Override
-    public double prefWidth(double width) {
-        return this.getWidth();
-    }
-    
-    /**
-     * 
-     * @param height
-     * @return 
-     */
-    @Override
-    public double prefHeight(double height) {
-        return this.getHeight();
-    }
-    
     private void clearCanvas() {
         GraphicsContext painter = this.getGraphicsContext2D();
         painter.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -173,7 +131,7 @@ public class AtomicModelFX extends Canvas{
     }
     
     /**
-     * 
+     * Draws the energy levels, basically circle circumferences. 
      */
     private void drawEnergyLevels() {
         
@@ -192,7 +150,8 @@ public class AtomicModelFX extends Canvas{
     }
 
     /**
-     * 
+     * Uses the circunference equation of the circle to find the point
+     * a point in the electron`s level circumference and draws an electron.
      */
     private void drawElectrons() {
         
@@ -209,8 +168,10 @@ public class AtomicModelFX extends Canvas{
                 /*Gather point in the circunference to write electron.*/
                 //xpoint = rcos(angle)
                 //ypoint = rsin(anagle)
-                double xpoint = (radius + (separation * x)) * (Math.cos(Math.toRadians(angles * z)));
-                double ypoint = (radius + (separation* x)) * (Math.sin(Math.toRadians(angles * z)));
+                double xpoint = (radius + (separation * x)) * 
+                        (Math.cos(Math.toRadians(angles * z)));
+                double ypoint = (radius + (separation* x)) * 
+                        (Math.sin(Math.toRadians(angles * z)));
                 
                 if(angles * z == 180 || angles * z == 360){
                     ypoint = 0;
@@ -269,20 +230,10 @@ public class AtomicModelFX extends Canvas{
         } 
     }
     
-    /**
-     * Change Listener that is triggered when the Canva's size changes. Upong
-     * being triggered it clears the canvas, sets the new Canva´s proportions 
-     * and repaints the canvas.
-     */
-    private class ResizingEvt implements ChangeListener {
-
-        @Override
-        public void changed(ObservableValue ov, Object t, Object t1) {
-            //All these methods are being called from AtomicModelFX.this
-            clearCanvas();
-            resizeCanvas(getWidth(), getHeight());
-            paintModel();
-        }
-        
+    @Override
+    protected void onResizeUpdate(){
+        clearCanvas();
+        resizeCanvas(getWidth(), getHeight());
+        paintModel();
     }
 }

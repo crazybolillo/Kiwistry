@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -54,14 +55,22 @@ public class JFXUI extends Application{
         searchFld = new TextField();
         searchFld.setPrefWidth(250);
         searchFld.setPromptText("Search for atom");
+        searchFld.setOnMouseClicked(e ->{
+            listVw.getSelectionModel().clearSelection();
+        });
         searchFld.setOnKeyReleased(e ->{
+            if(e.getCode() == KeyCode.DOWN){
+                listVw.requestFocus();
+                listVw.getSelectionModel().select(0);
+                return;
+            }
             this.filterEvt();
         });
         
         defData = SQLReader.getAtomNames();
         
         listVw = new ListView<>();
-        listVw.setPrefSize(250, 350);
+        listVw.setPrefSize(250, Integer.MAX_VALUE);
         listVw.setItems(defData);
         listVw.setOnMouseClicked(e ->{
             if(e.getClickCount() > 1){
@@ -73,7 +82,7 @@ public class JFXUI extends Application{
                 }
             }
         });
-        
+                
         randomBtn = new Button();
         randomBtn.setText("Random atom");
         randomBtn.setPrefWidth(150);
@@ -101,7 +110,7 @@ public class JFXUI extends Application{
         components[2] = listVw;
         components[3] = randomBtn;
         components[4] = gameBtn;
-        
+            
         for(int x = 0; x < components.length; x++){
             GridPane.setConstraints(components[x], 0, x);
             GridPane.setHalignment(components[x], HPos.CENTER);
@@ -141,17 +150,18 @@ public class JFXUI extends Application{
         gameBtn.setMinWidth(searchFld.getMinWidth());
         gameBtn.setMinHeight(searchFld.getMinHeight());
         
+        
         //Display window and request focus so prompt text appears on text field.
         window.show();
         listVw.requestFocus();
     }
     
     private void filterEvt() {
-        
-        if(searchFld.getText().isEmpty()) listVw.setItems(defData);
-        
+        if(searchFld.getText().isEmpty()){
+            listVw.setItems(defData);
+            return;
+        }
         ObservableList<String> filterData = FXCollections.observableArrayList();
-        
         for(String str : defData){
             if(str.toLowerCase().contains(searchFld.getText().toLowerCase())){
                 filterData.add(str);

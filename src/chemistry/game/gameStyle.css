@@ -3,3 +3,18 @@
     -fx-font-size: 16px;
 }
 
+.label{
+    -fx-font-size: 24px;
+}
+
+#scoreLbl{
+     -fx-font-size: 40px;   
+}
+
+.button{
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+}
+

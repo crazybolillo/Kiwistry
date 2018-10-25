@@ -6,7 +6,11 @@
 
 #header{
     -fx-text-fill: #212121;
-    -fx-font-size: 32;
+    -fx-font-size: 2.2em;
+}
+
+#atomtxt{
+    -fx-font-size: 1.3em;
 }
 
 .text-field{
