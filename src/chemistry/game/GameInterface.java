@@ -7,7 +7,11 @@
 package chemistry.game;
 
 import chemistry.atoms.Atom;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -21,12 +25,20 @@ import java.util.Random;
 public abstract class GameInterface {
     
     /**
-     * Stores the set of choices the users has for the round.<h3>By convention
-     * the right answer is always index 0 of this List.</h3>
+     * Used to randomize the right answer inside the set of 
      */
-    private List<?> answers;
-    protected void setAnswers(List<?> answers){this.answers = answers;}
-    protected List<?> getAnswers(){return answers;}
+    private static List<Integer> INDEXES = new ArrayList<>(Arrays.asList(0,1,2,3));
+    public static List<Integer> getRandomFour(){
+        Collections.shuffle(INDEXES);
+        return INDEXES;
+    }
+    
+    /**
+     * Stores the right answer for the round.
+     */
+    private Atom answer;
+    protected void setAnswers(Atom answers){this.answer = answers;}
+    protected Atom getAnswers(){return answer;}
     
     /**
      * Keeps track of the lives the user has left. Once they reach cero the
@@ -53,19 +65,100 @@ public abstract class GameInterface {
      * is rare udner normal conditions and will probably only happen if the
      * .jar is corrupted.
      */
-    protected Atom[] getRandomAtoms() throws SQLException{
+    protected List<Atom> getRandomAtoms() throws SQLException{
         int atomicNumbers[] = 
                 new Random().ints(1, 119).distinct().limit(4).toArray();
         
-        Atom retVal[] = new Atom[4];
-        for(int x = 0; x < retVal.length; x++){
-            retVal[x] = new Atom(atomicNumbers[x]);
+        List<Atom> retVal = new ArrayList<>();
+        for(int x = 0; x < 4; x++){
+            retVal.add(new Atom(atomicNumbers[x]));
         }
         return retVal;
     } 
     
+    /**
+     * Compares the answer passed trough the parameters with the correct
+     * answer. Returns false if they are not equal. True if they are. 
+     * @param <E> Type of answer passed to the parameters.
+     * @param answer Variable that will be compared.
+     * @return True if the parameter matches the answer and false if it doesnt.
+     */
     protected <E> boolean verifyAnswer(E answer){
-        return answers.indexOf(answer) == 0;
+        return this.answer.equals(answer);
+    }
+    
+    /**
+     * Inner class that contains a method and a string. In this context
+     * the class holds a getter Method from the atom class and the String
+     * contains a descrption of what the getter returns. This is can be used
+     * to randomly generate different guesses for the user each round and 
+     * display the string that displays what they are supposed to guess.
+     */
+    public class MethodMap {
+        
+        private Method clueMeth;
+        private Method questionMeth;
+        private String descriptor;
+        
+        public MethodMap(Method clMeth, Method meth, String str){
+            this.clueMeth = clMeth;
+            this.questionMeth = meth;
+            this.descriptor = str;
+        }
+        
+        /**
+         * Returns the recommended method which returns data that can
+         * be displayed to the user as a clue to aid him in guessing
+         * the right answer.
+         * @return getter Method from the Atom class. Can return a String or int
+         */
+        public Method getClueMethod(){
+            return clueMeth;
+        }
+        
+        /**
+         * Returns the recommended method which returns data that can
+         * be displayed to the user as a choice in the answer section.
+         * @return getter Method from the Atom class. Can return a String or int
+         */
+        public Method getChoiceMethod(){
+            return questionMeth;
+        }
+        
+        /**
+         * Returns a String which describes the information the user has to guess.
+         * This information is the same as the information being given in the 
+         * choices section.
+         * @return String that described value returned by method returned
+         *  by getChoiceMethod()
+         */
+        public String getDescriptor(){
+            return descriptor;
+        }
+    }
+    
+    /**
+     * Returns a list containing getter methods that returns variables which
+     * can be used to be guessed by the player. The objects inside the list
+     * contain the getter method and a String which can be shown to the user
+     * which explains what needs to be guessed.
+     * @return List with MethodMap objects, contains a getter method from the
+     * Atom class and a String that details what the methods return.
+     * @throws Exception If the methods can not be found.
+     */
+    public List<MethodMap> getMethods() throws Exception{
+        List<MethodMap> retVal = new ArrayList<>();
+        retVal.add(new MethodMap(Atom.class.getDeclaredMethod("getSymbol"),
+                Atom.class.getDeclaredMethod("getName"),
+                "Atom's name"));
+        retVal.add(new MethodMap(Atom.class.getDeclaredMethod("getName"),
+                Atom.class.getDeclaredMethod("getSymbol"),
+                "Atom's symbol"));
+        retVal.add(new MethodMap(Atom.class.getDeclaredMethod("getName"),
+                Atom.class.getDeclaredMethod("getAtomicNumber"),
+                "Atom's atomic number"));
+        
+        return retVal;
     }
     
     protected abstract void setQuestion();
@@ -73,4 +166,5 @@ public abstract class GameInterface {
     protected abstract void removeLife();
     protected abstract void updateScore();
     protected abstract void finishGame();
+    
 }

@@ -19,6 +19,11 @@ public abstract class ResizableCanvas extends Canvas{
             this.onResizeUpdate();
         });
     }
+    
+    @Override 
+    public boolean isResizable(){
+        return true;
+    }
         
     /**
      * Method that runs whenever the width/height of the canvas changes.

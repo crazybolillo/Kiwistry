@@ -1,12 +1,11 @@
 package chemistry.game;
 
-import boiler.fxlayouts.GeometryBoiler;
-import boiler.fxlayouts.GridBoiler;
+import chemistry.utils.GridBoiler;
 import chemistry.atoms.Atom;
 import chemistry.defStage.DefaultStage;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -35,19 +34,45 @@ public class GameWindow extends GameInterface{
     private Label scoreLbl;
     
     private Label choiceLbl;
-    private List<Button> choiceBtn;
+    private List<GameButton> choiceBtn;
+    
     /**
-     * Initializes all the layout components the window has. It also loads
-     * all the atom names found in the database to create the first question
-     * for the user. 
+     * Initializes all the layout components the window has.
      */
     public GameWindow() {
 
-        //----------------
-        //Setting top panel
-        //----------------
+        this.setTopPanel();
+        this.setBottomPanel();
+                
+       //-------------------
+       //Setting container panel
+       //-------------------
+       container = new GridPane();
+       container.setAlignment(Pos.CENTER);
+       GridBoiler.addRowConstraints(container, 60, 40);
+       
+       GridPane.setConstraints(topPane, 0, 0);
+       container.getChildren().add(topPane);
+       
+       GridPane.setConstraints(bottomPane, 0, 1);
+       container.getChildren().add(bottomPane);
+       
+        sc = new Scene(container, 320, 500);
+        sc.getStylesheets().add("/chemistry/game/gameStyle.css");
+        
+        window = new DefaultStage();
+        window.setScene(sc);
+        window.setResizable(false);
+        window.setTitle("Atomic game");
+        
+        //Controlling window resizing
+        window.setMinWidth(window.getWidth());
+        window.setMinHeight(window.getHeight());      
+    }
+       
+    private void setTopPanel(){
+    
         topPane = new GridPane();
-        topPane.setGridLinesVisible(true);
         GridBoiler.addColumnConstraints(topPane, 15, 15, 15, 30, 25);
         GridBoiler.addRowConstraints(topPane, 20, 80);
         
@@ -64,55 +89,57 @@ public class GameWindow extends GameInterface{
             topPane.getChildren().add(img);
         }
         clueLbl = new Label();
+        clueLbl.setFont(new Font("Roboto", 30));
         clueLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        GridBoiler.addNode(topPane, clueLbl, 1, 1, 3, 1);
+        
+        GridPane.setConstraints(clueLbl, 1, 1, 3, 1);
+        topPane.getChildren().add(clueLbl);
         
         scoreLbl = new Label("000");
         scoreLbl.setId("scoreLbl");
         scoreLbl.setTextAlignment(TextAlignment.RIGHT);
-        GridBoiler.addNode(topPane, scoreLbl, new GeometryBoiler(HPos.RIGHT, null),
-                topPane.getColumnConstraints().size() - 1);
         
-       //-----------
-       //Setting panel that offers the user choices
-       //----------
+        GridPane.setConstraints(scoreLbl, 4, 0);
+        topPane.getChildren().add(scoreLbl);
+    }
+    
+    private void setBottomPanel(){
+    
        bottomPane = new GridPane();
-       bottomPane.setGridLinesVisible(true);
        choiceBtn = new ArrayList<>();
        for(int x = 0; x < 4; x++){
-           Button btn = new Button();
+           GameButton btn = new GameButton();
+           btn.setFont(new Font("Roboto", 20));
            btn.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-           btn.setOnAction(e ->{this.removeLife();});
+           btn.setOnAction(e ->{
+               this.checkAnswer(btn.getAtom());
+           });
            choiceBtn.add(btn);
        }
-       choiceLbl = new Label("Guess the: ");
+       choiceLbl = new Label();
+       choiceLbl.setId("choice");
        choiceLbl.setTextAlignment(TextAlignment.CENTER);
+       
        GridBoiler.addColumnConstraints(bottomPane, 50, 50);
        GridBoiler.addRowConstraints(bottomPane, 20, 40, 40);
-       GridBoiler.addNode(bottomPane, choiceLbl, 
-               new GeometryBoiler(HPos.CENTER, null), 0, 0, 2, 1);
-       GridBoiler.addNodes(bottomPane, choiceBtn, 2, 1, new GeometryBoiler());
-        
-       //-------------------
-       //Setting container panel
-       //-------------------
-       container = new GridPane();
-       container.setAlignment(Pos.CENTER);
-       GridBoiler.addRowConstraints(container, 60, 40);
-       GridBoiler.addNode(container, topPane);
-       GridBoiler.addNode(container, bottomPane, 0, 1);
        
-        sc = new Scene(container, 320, 500);
-        sc.getStylesheets().add("/chemistry/game/gameStyle.css");
+       GridPane.setConstraints(choiceLbl, 0, 0, 2, 1);
+       GridPane.setHalignment(choiceLbl, HPos.CENTER);
+       bottomPane.getChildren().add(choiceLbl);
+       
+       int row = 1;
+       int col = 1;
+       int added = 0;
+       for(Button btn : choiceBtn){        
+           GridPane.setConstraints(btn, col - row, row);
+           bottomPane.getChildren().add(btn);
+           if(col == 2 && added == 0){ 
+               row++;
+               added++;
+           }
+           else col++;
+       }
         
-        window = new DefaultStage();
-        window.setScene(sc);
-        window.setResizable(true);
-        window.setTitle("Atomic game");
-        
-        //Controlling window resizing
-        window.setMinWidth(window.getWidth());
-        window.setMinHeight(window.getHeight());      
     }
     
     /**
@@ -120,9 +147,10 @@ public class GameWindow extends GameInterface{
      */
     public void display(){
         window.show();
+        this.setQuestion();
     }
     
-    /**
+        /**
      * Closes the window.
      */
     public void close(){
@@ -134,12 +162,25 @@ public class GameWindow extends GameInterface{
      */
     @Override
     protected void setQuestion() {     
-        Atom atomChoices[];
         try {
-            atomChoices = this.getRandomAtoms();
-        } catch (SQLException ex) {window.close();}
-      
-        
+            List<Atom> atomChoices;
+            atomChoices = this.getRandomAtoms();   
+            /*Generate 4 random numbers from 0 to 3 to randomly add the possible
+            answers to the buttons*/
+            List<Integer> randIndex = GameInterface.getRandomFour();
+            MethodMap question = this.getMethods().get(new Random().nextInt(3));
+            for(int index : randIndex){
+                choiceBtn.get(index).setText(
+                    question.getChoiceMethod().invoke(atomChoices.get(index)));
+                choiceBtn.get(index).setAtom(atomChoices.get(index));
+            }
+            choiceLbl.setText(question.getDescriptor());
+            clueLbl.setText((String) 
+                question.getClueMethod().invoke(atomChoices.get(randIndex.get(0))));
+            this.setAnswers(atomChoices.get(randIndex.get(0)));
+        } catch (Exception ex) {
+            window.close();
+        }
     }
     
     /**
@@ -151,11 +192,12 @@ public class GameWindow extends GameInterface{
     @Override
     protected <E> void checkAnswer(E answer){
         if(this.verifyAnswer(answer)) {
-            
+            this.updateScore();
             this.setQuestion();
         }
         else{
-            this.removeLife();
+            this.removeLife(); 
+            this.setQuestion();
         }  
     }
     
@@ -173,19 +215,30 @@ public class GameWindow extends GameInterface{
         }
         int col = 0 + Math.abs(this.getLiveCount());
         
-        topPane.getChildren().remove(col + 1);
+        topPane.getChildren().remove(col);
         ImageView imgv = new ImageView(new Image(
                 "/chemistry/game/emptyHeart.png"));
         imgv.setFitWidth(45);
         imgv.setFitHeight(45);
-        GridBoiler.addNode(topPane, imgv, col, 0);
         
-        this.setQuestion();
+        GridPane.setConstraints(imgv, col, 0);
+        topPane.getChildren().add(imgv);
     }
 
     @Override
     protected void updateScore(){
-        
+        this.setScore(this.getScore() + 1);
+        String sc = Integer.toString(this.getScore());
+        switch(sc.length()){
+            case 1:
+                scoreLbl.setText("00" + sc);
+                break;
+            case 2:
+                scoreLbl.setText("0" + sc);
+                break;
+            default:
+                scoreLbl.setText(sc);
+        } 
     }
     
     /**

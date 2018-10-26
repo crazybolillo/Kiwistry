@@ -93,6 +93,7 @@ public class JFXUI extends Application{
                         listVw.getItems().get(random.nextInt(118)));
                 sheet.display();
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
         
