@@ -1,23 +1,34 @@
 package chemistry.game;
 
 import chemistry.atoms.Atom;
-import javafx.scene.control.Button;
+import javafx.scene.text.Font;
+import rendering.ResizableLabel;
 
 /**
- * This class is almost identical to a button. The only difference is that
+ * This class is almost identical to a button. The only two differences is that
  * it has an extra generic field which stores an Atom. This is useful to
  * as it can return this atom upong being clicked to a method which verifies
- * if this was the correct answer or not.
+ * if this was the correct answer or not. Second difference involves dynamic
+ * font resizing based on its size.
  * @author https://github.com/AntonioBohne
  */
-public class GameButton extends Button{
+public class GameButton extends ResizableLabel {
     
     private Atom atom;
-    
+        
+    /**
+     * Sets the value for the atom field this class has.
+     * @param atom Atom that will se to this classe's atom field. This value
+     * is used to determine whether the user clicked on the rigth answer or not.
+     */
     public void setAtom(Atom atom){
         this.atom = atom;
     }
     
+    /**
+     * Returns the Atom that this Button represents and stores.
+     * @return Atom. Used to verify if the user clicked on the correct answer.
+     */
     public Atom getAtom(){
         return atom;
     }

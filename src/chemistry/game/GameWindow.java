@@ -8,17 +8,20 @@ import java.util.List;
 import java.util.Random;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.layout.Priority;
+import rendering.ResizableLabel;
+import rendering.StyleLoader;
 
 /**
- *
+ * This class provides the GUI to play an interactive trivia game about Atoms.
+ * It is based on the abstract class GameInterface which provides useful methods
+ * and keeps track of the score and lives left. The window uses modified labels
+ * and buttons that implement a better resizing behavior.
  * @author https://github.com/AntonioBohne
  */
 public class GameWindow extends GameInterface{
@@ -29,11 +32,13 @@ public class GameWindow extends GameInterface{
     private GridPane container;
     private GridPane topPane;
     private GridPane bottomPane;
-
-    private Label clueLbl;
-    private Label scoreLbl;
     
-    private Label choiceLbl;
+    private List<GridPane> liveWrapper;
+    
+    private ResizableLabel clueLbl;
+    private ResizableLabel scoreLbl;
+    
+    private ResizableLabel choiceLbl;
     private List<GameButton> choiceBtn;
     
     /**
@@ -57,68 +62,99 @@ public class GameWindow extends GameInterface{
        GridPane.setConstraints(bottomPane, 0, 1);
        container.getChildren().add(bottomPane);
        
-        sc = new Scene(container, 320, 500);
-        sc.getStylesheets().add("/chemistry/game/gameStyle.css");
+        sc = new Scene(container, 400, 480);
+        sc.getStylesheets().add(StyleLoader.getGameStyleSheetURL());
         
         window = new DefaultStage();
+        window.setWidth(sc.getWidth());
+        window.setHeight(sc.getHeight());
         window.setScene(sc);
-        window.setResizable(false);
+        window.setResizable(true);
         window.setTitle("Atomic game");
         
         //Controlling window resizing
         window.setMinWidth(window.getWidth());
-        window.setMinHeight(window.getHeight());      
+        window.setMinHeight(window.getHeight()); 
     }
        
+    /**
+     * 
+     */
     private void setTopPanel(){
     
         topPane = new GridPane();
         GridBoiler.addColumnConstraints(topPane, 15, 15, 15, 30, 25);
-        GridBoiler.addRowConstraints(topPane, 20, 80);
+        GridBoiler.addRowConstraints(topPane, 25, 75);
         
-       /*Creating hearts which signify how many lives the player has left
-       and also add them directly to the topPane.*/
+       /*Creating hearts which signify how many lives the player has left. They
+        are wrapped in a GridPane so that their width and height are binded to
+        it, allowing for resizing.*/
+        liveWrapper = new ArrayList<>();
         for(int x = 0; x < 3; x++){
             ImageView img = new ImageView(new Image(
-                    "/chemistry/game/fillHeart.png"));
-            img.setFitWidth(45);
-            img.setFitHeight(45);
+                    StyleLoader.getFilledHeartURL()));
+            img.setFitWidth(50);
+            img.setFitHeight(50);
             img.setPreserveRatio(true);
             
-            GridPane.setConstraints(img, x, 0);
-            topPane.getChildren().add(img);
+            GridPane pane = new GridPane();
+            pane.setAlignment(Pos.CENTER);
+            pane.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+            pane.setMinSize(0, 0);
+            liveWrapper.add(pane);
+            
+            GridPane.setConstraints(img, 0, 0);
+            GridPane.setHalignment(img, HPos.CENTER);
+            pane.getChildren().add(img);
+            
+            img.fitWidthProperty().bind(pane.widthProperty());
+            img.fitHeightProperty().bind(pane.heightProperty());
+            
+            GridPane.setConstraints(pane, x, 0);
+            topPane.getChildren().add(pane);
         }
-        clueLbl = new Label();
-        clueLbl.setFont(new Font("Roboto", 30));
+        clueLbl = new ResizableLabel();
+        clueLbl.setSizeToHeightRatio(5);
         clueLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        clueLbl.setMinSize(0, 0);
+        clueLbl.setAlignment(Pos.CENTER);
         
-        GridPane.setConstraints(clueLbl, 1, 1, 3, 1);
+        GridPane.setConstraints(clueLbl, 0, 1, 5, 1);
         topPane.getChildren().add(clueLbl);
         
-        scoreLbl = new Label("000");
-        scoreLbl.setId("scoreLbl");
-        scoreLbl.setTextAlignment(TextAlignment.RIGHT);
+        scoreLbl = new ResizableLabel("000");
+        scoreLbl.setSizeToHeightRatio(1.5);
+        scoreLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        scoreLbl.setMinSize(0, 0);
+        scoreLbl.setAlignment(Pos.CENTER);
         
         GridPane.setConstraints(scoreLbl, 4, 0);
+        GridPane.setHalignment(scoreLbl, HPos.RIGHT);
         topPane.getChildren().add(scoreLbl);
     }
     
+    /**
+     * 
+     */
     private void setBottomPanel(){
     
        bottomPane = new GridPane();
        choiceBtn = new ArrayList<>();
        for(int x = 0; x < 4; x++){
            GameButton btn = new GameButton();
-           btn.setFont(new Font("Roboto", 20));
+           btn.setAlignment(Pos.CENTER);
+           btn.setSizeToHeightRatio(3);
            btn.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-           btn.setOnAction(e ->{
+           btn.setMinSize(0, 0);
+           btn.setOnMouseClicked(e ->{
                this.checkAnswer(btn.getAtom());
            });
            choiceBtn.add(btn);
        }
-       choiceLbl = new Label();
-       choiceLbl.setId("choice");
-       choiceLbl.setTextAlignment(TextAlignment.CENTER);
+       choiceLbl = new ResizableLabel();
+       choiceLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+       choiceLbl.setMinSize(0, 0);
+       choiceLbl.setAlignment(Pos.CENTER);
        
        GridBoiler.addColumnConstraints(bottomPane, 50, 50);
        GridBoiler.addRowConstraints(bottomPane, 20, 40, 40);
@@ -130,8 +166,8 @@ public class GameWindow extends GameInterface{
        int row = 1;
        int col = 1;
        int added = 0;
-       for(Button btn : choiceBtn){        
-           GridPane.setConstraints(btn, col - row, row);
+       for(GameButton btn : choiceBtn){        
+           GridPane.setConstraints(btn, col - row, row, 1, 1);
            bottomPane.getChildren().add(btn);
            if(col == 2 && added == 0){ 
                row++;
@@ -139,7 +175,6 @@ public class GameWindow extends GameInterface{
            }
            else col++;
        }
-        
     }
     
     /**
@@ -150,7 +185,7 @@ public class GameWindow extends GameInterface{
         this.setQuestion();
     }
     
-        /**
+    /**
      * Closes the window.
      */
     public void close(){
@@ -158,7 +193,11 @@ public class GameWindow extends GameInterface{
     }
 
     /**
-     * 
+     * Generates a list containing four random atoms and sets the first one
+     * as the correct answer. It then proceeds to select a random MethodMap 
+     * object which contains the getter that will display the clue, the getter
+     * that will display the possible answers and a String that tells the user
+     * what needs to be guessed.
      */
     @Override
     protected void setQuestion() {     
@@ -215,34 +254,43 @@ public class GameWindow extends GameInterface{
         }
         int col = 0 + Math.abs(this.getLiveCount());
         
-        topPane.getChildren().remove(col);
+        liveWrapper.get(col).getChildren().remove(0);
         ImageView imgv = new ImageView(new Image(
-                "/chemistry/game/emptyHeart.png"));
+                StyleLoader.getEmptyHeartURL()));
+        imgv.setPreserveRatio(true);
         imgv.setFitWidth(45);
         imgv.setFitHeight(45);
         
         GridPane.setConstraints(imgv, col, 0);
-        topPane.getChildren().add(imgv);
+        liveWrapper.get(col).getChildren().add(imgv);
+        imgv.fitWidthProperty().bind(liveWrapper.get(col).widthProperty());
+        imgv.fitHeightProperty().bind(liveWrapper.get(col).heightProperty());
     }
-
+    
+    /**
+     * Updates the score by one. Adds the necessary zeros (1 or 2) to make the
+     * score measure at least 3 numbers. If the score measures 3 or more
+     * characters no zeros are added.
+     */
     @Override
     protected void updateScore(){
         this.setScore(this.getScore() + 1);
-        String sc = Integer.toString(this.getScore());
-        switch(sc.length()){
+        String score = Integer.toString(this.getScore());
+        switch(score.length()){
             case 1:
-                scoreLbl.setText("00" + sc);
+                scoreLbl.setText("00" + score);
                 break;
             case 2:
-                scoreLbl.setText("0" + sc);
+                scoreLbl.setText("0" + score);
                 break;
             default:
-                scoreLbl.setText(sc);
+                scoreLbl.setText(score);
         } 
     }
     
     /**
      * Called when the livecount has reached 0 and therefore the game has ended.
+     * Closes this window and displays a new stage showing the ending score.
      */
     @Override
     protected void finishGame() {

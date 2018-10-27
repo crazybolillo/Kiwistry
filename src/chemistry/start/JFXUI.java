@@ -21,6 +21,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import rendering.StyleLoader;
+import rendering.StyleLoader.STYLE_TYPE;
 
 /**
  *
@@ -51,6 +53,18 @@ public class JFXUI extends Application{
         headerTxt = new Label();
         headerTxt.setText("Atomic models");
         headerTxt.setId("header");
+        headerTxt.setOnMouseClicked(e ->{
+            if(StyleLoader.getCurrentStyle() == STYLE_TYPE.LIGHT){
+                StyleLoader.setApplicationStyle(STYLE_TYPE.DARK);
+                sc.getStylesheets().remove(0);
+                sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
+            }
+            else{
+                StyleLoader.setApplicationStyle(STYLE_TYPE.LIGHT);
+                sc.getStylesheets().remove(0);
+                sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
+            }
+        });
         
         searchFld = new TextField();
         searchFld.setPrefWidth(250);
@@ -72,11 +86,20 @@ public class JFXUI extends Application{
         listVw = new ListView<>();
         listVw.setPrefSize(250, Integer.MAX_VALUE);
         listVw.setItems(defData);
+        listVw.setOnKeyReleased(e ->{
+            if(e.getCode() == KeyCode.ENTER){
+                try{
+                    JFXSheet sheet = new JFXSheet(
+                    listVw.getSelectionModel().getSelectedItem());
+                    sheet.display();
+                }catch(Exception ex){}
+            }
+        });
         listVw.setOnMouseClicked(e ->{
             if(e.getClickCount() > 1){
                 try{
                     JFXSheet sheet = new JFXSheet(
-                            listVw.getSelectionModel().getSelectedItem());
+                        listVw.getSelectionModel().getSelectedItem());
                     sheet.display();
                 }catch(Exception ex){
                 }
@@ -93,7 +116,6 @@ public class JFXUI extends Application{
                         listVw.getItems().get(random.nextInt(118)));
                 sheet.display();
             } catch (Exception ex) {
-                ex.printStackTrace();
             }
         });
         
@@ -123,8 +145,7 @@ public class JFXUI extends Application{
         bodyPanel.setPadding(new Insets(10, 15, 10, 15));
 
         sc = new Scene(bodyPanel, 280, 530);
-        sc.getStylesheets().add(this.getClass().getResource(
-                "JFXStyle.css").toExternalForm());
+        sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
         
         window.setScene(sc);
         window.setTitle("Atomic Models");

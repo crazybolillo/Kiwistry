@@ -8,18 +8,18 @@ import java.util.List;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import rendering.AtomicModelFX;
 import rendering.CanvasFrame;
 import rendering.ResizableLabel;
+import rendering.StyleLoader;
 
 /**
- *
+ * This class is used to display information about an atom. It includes a
+ * 2D model and several labels with general information like name, atomic number
+ * mass etc...
  * @author https://github.com/AntonioBohne
  */
 public class JFXSheet {
@@ -66,7 +66,7 @@ public class JFXSheet {
         layout = new GridPane();
         layout.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
         layout.setAlignment(Pos.CENTER);
-        
+
         this.setAtomicModel();
         this.setAtomicInformation();
         this.setButtons();
@@ -75,7 +75,7 @@ public class JFXSheet {
         //Setting up layout. 
         //---------------      
         GridBoiler.addColumnConstraints(layout, 10, 40, 40, 10);
-        GridBoiler.addRowConstraints(layout, 50, 8, 8, 8, 8, 8);
+        GridBoiler.addRowConstraints(layout, 60, 8, 8, 8, 8);
         
         GridPane.setConstraints(modelContainer, 0, 0, 4, 1);
         layout.getChildren().add(modelContainer);
@@ -83,19 +83,16 @@ public class JFXSheet {
         int y = 1;
         for(GridPane pane : infoWrappers){
             GridPane.setConstraints(pane, 1, y, 2, 1);
-            GridPane.setHgrow(pane, Priority.ALWAYS);
-            GridPane.setVgrow(pane, Priority.ALWAYS);
-            GridPane.setFillHeight(pane, true);
-            GridPane.setFillWidth(pane, true);
+            layout.getChildren().add(pane);
             y++;
         }
         
-        GridPane.setConstraints(nextBtn, 1, ++y);
-        GridPane.setHalignment(layout, HPos.CENTER);
+        GridPane.setConstraints(nextBtn, 1, y);
+        GridPane.setHalignment(nextBtn, HPos.CENTER);
         layout.getChildren().add(nextBtn);
         
         GridPane.setConstraints(view3DBtn, 2, y);
-        GridPane.setHalignment(layout, HPos.CENTER);
+        GridPane.setHalignment(view3DBtn, HPos.CENTER);
         layout.getChildren().add(view3DBtn);
         
         layout.setPadding(new Insets(10, 10, 10, 10));
@@ -103,8 +100,8 @@ public class JFXSheet {
         layout.setVgap(7);
         
         //Set scene
-        sc = new Scene(layout, 320, 560);
-        sc.getStylesheets().add("/chemistry/start/JFXStyle.css");
+        sc = new Scene(layout, 320, 520);
+        sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
         
         window.setScene(sc);
         window.setWidth(sc.getWidth());
@@ -118,6 +115,11 @@ public class JFXSheet {
         
         modelContainer.setMinWidth(modelContainer.getWidth());
         modelContainer.setMinHeight(modelContainer.getHeight());
+        
+        for(GridPane pane : infoWrappers){
+            pane.setMinHeight(pane.getHeight());
+            pane.setMinWidth(pane.getWidth());
+        }
     }
     
     /**
@@ -162,15 +164,12 @@ public class JFXSheet {
             atomInfo[x] = new ResizableLabel();
             
             GridPane pane = new GridPane();
-            pane.prefHeight(Integer.MAX_VALUE);
-            pane.prefWidth(Integer.MAX_VALUE);
-            pane.minWidth(pane.getWidth());
-            pane.minHeight(pane.getHeight());
-            
             GridPane.setConstraints(atomInfo[x], 0, 0);
             pane.getChildren().add(atomInfo[x]);
-            atomInfo[x].widthProperty().bind(pane.widthProperty());
-            atomInfo[x].heightProperty().bind(pane.heightProperty());
+            
+            atomInfo[x].setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+            atomInfo[x].setMinSize(atomInfo[x].getWidth(), atomInfo[x].getHeight());
+            atomInfo[x].setAlignment(Pos.CENTER);
             
             infoWrappers.add(pane);
         }
@@ -189,27 +188,47 @@ public class JFXSheet {
     private void setButtons(){
         
         nextBtn = new Button();
-        nextBtn.setText("Next atom");
+        nextBtn.setText("<- Atom");
         nextBtn.setOnAction(e-> {
             try{
-                int atomNum = atomo.getAtomicNumber() + 1;
-                if(atomNum > 118) atomNum = 1;
-                
+                int atomNum = atomo.getAtomicNumber() - 1;
+                if(atomNum <= 0) atomNum = 118;
+        
                 JFXSheet sheet = new JFXSheet(atomNum);
-                sheet.display();
-                
+                if(window.isMaximized())
+                    sheet.displayMaximized();
+                else
+                    sheet.display();
+                  
                 this.close();
             }catch(Exception ex){}
         });
         
         view3DBtn = new Button();
-        view3DBtn.setText("3D model");
-        view3DBtn.setTooltip(new Tooltip("Not supported yet"));
+        view3DBtn.setText("-> Atom");
+        view3DBtn.setOnAction(e ->{
+            try{
+                int atomNum = atomo.getAtomicNumber() + 1;
+                if(atomNum > 118) atomNum = 1;
+        
+                JFXSheet sheet = new JFXSheet(atomNum);
+                if(window.isMaximized())
+                    sheet.displayMaximized();
+                else
+                    sheet.display();
+                  
+                this.close();
+            }catch(Exception ex){}
+        });
     }
-    
+
     public void display() {
         window.show();
-        layout.setGridLinesVisible(true);
+    }
+    
+    public void displayMaximized(){
+        window.show();
+        window.setMaximized(true);
     }
     
     public void close() {

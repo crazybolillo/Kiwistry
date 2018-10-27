@@ -1,7 +1,6 @@
 package rendering;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 
 /**
@@ -10,125 +9,65 @@ import javafx.scene.text.Font;
  * the adecuate font size and repaint the text.
  * @author https://github.com/AntonioBohne
  */
-public class ResizableLabel extends ResizableCanvas{
+public class ResizableLabel extends Label{
 
     private String text;
     private Font fontSize;
-    private GraphicsContext gc;
+    private double sizeToHeight = 2;
     
     public ResizableLabel(){
         super();
-        gc = this.getGraphicsContext2D();
-        fontSize = new Font("Roboto", 1);
+        this.fontSize = new Font("Roboto", 1);
+        this.setFont(fontSize);
+        this.setListeners();
     }
     
-    /**
-     * Creates a new ResizableCanvas and sets its text to the one passed
-     * trough the parameters. Using this constructor will leave the default
-     * size of the canvas to 0 which means the text wont be seen. To also
-     * set the initial width and height look at the different constructor.
-     * @param text Text that will be drawn on the screen.
-     */
     public ResizableLabel(String text){
-        super();
-        this.text = text;
-        gc = this.getGraphicsContext2D();
-        fontSize = new Font("Roboto", 1);
+        super(text);
+        this.fontSize = new Font("Roboto", 1);
+        this.setFont(fontSize);
+        this.setListeners();
     }
     
     /**
-     * Creates a new ResizableCanvas, sets its text and also its initial
-     * width and height. 
-     * @param text Text that will be drawn on the canvas.
-     * @param width Initial width that the canvas will have.
-     * @param height Initial height that the canvas will have.
+     * Sets the height to font size ratio. The division between the component's
+     * height and the ratio will be the font size.
+     * @param ratio New ratio to calculate font size. Will divide the height
+     * to set the font size.
      */
-    public ResizableLabel(String text, double width, double height){
-        super();
-        this.text = text;
-        gc = this.getGraphicsContext2D();
-        fontSize = new Font("Roboto", 1);
-        this.setWidth(width);
-        this.setHeight(height);
+    public void setSizeToHeightRatio(double ratio){
+        this.sizeToHeight = ratio;
     }
     
     /**
-     * Creates a new ResizableCanvas, sets its text and also its initial
-     * width and height. 
-     * @param width Initial width that the canvas will have.
-     * @param height Initial height that the canvas will have.
+     * Adds listeners to the width and height of the label. Whenever the width
+     * or height changes the <code>onResizeUpdate()</code> method will be called.
      */
-    public ResizableLabel(double width, double height){
-        super();
-        gc = this.getGraphicsContext2D();
-        fontSize = new Font("Roboto", 1);
-        this.setWidth(width);
-        this.setHeight(height);
+    private void setListeners(){
+        this.widthProperty().addListener(e ->{
+            this.onResizeUpdate();
+        });
+        this.heightProperty().addListener(e ->{
+            this.onResizeUpdate();
+        });
     }
-    
-    /**
-     * Sets the text that will be displayed in the Canvas. Calling this 
-     * function automatically updates the canvas, erases any previous text
-     * and draws the new one. 
-     * @param text Text that will be displayed.
-     */
-    public void setText(String text){
-        this.text = text;
-    }
-    
-    /**
-     * Returns the texdt that is currently being displayed on the canvas.
-     * @return String that equals the text being displayed on this canvas.
-     */
-    public String getText(){
-            return text;
-    }
-    
-    /**
-     * Utilitarian method that clears the rectangle. Called everytime the 
-     * canvas has to be updated.
-     */
-    private void clearCanvas(){
-        gc.clearRect(0, 0, this.getWidth(), this.getHeight());
-    }
-    
+
+
     /**
      * Utilitarian method that calculates the adecuate font size based on the
      * current width and height of the canvas.
      */
     private void calculateFontSize(){
-        double size = ((this.getWidth() + this.getHeight()) / 6) - 
-                (this.getWidth() * .15);
+        double size = this.getHeight() / sizeToHeight;
         fontSize = new Font("Roboto", size);
+        this.setFont(fontSize);
     }
-    
-    /**
-     * Draws the current String field "text" on the canvas with the current
-     * font size. To update the font size that the Text will have call
-     * <code>calculateFontSize()</code> first.
-     */
-    private void drawText(){
-        gc.setFont(fontSize);
-        gc.setFill(Color.BLACK);
-        gc.fillText(text, this.getWidth() / 2, this.getHeight() /1.5);
-    }
-    
-    
+ 
     /**
      * The width/height property will call this method when their listeners
      * detect any change.
      */
-    @Override
-    protected void onResizeUpdate() {
-        this.clearCanvas();
+    private void onResizeUpdate() {
         this.calculateFontSize();
-        this.drawText();
-        System.out.println("DRAWED: " + fontSize.getSize() + "----" + this.getWidth());
     }
-    
-    public void setPrefWidth(double width){
-        
-    }
-    
-
 }

@@ -1,0 +1,65 @@
+.root{
+    -fx-background-color: #212121;
+    -fx-font-family: "Roboto";
+    -fx-font-size: 1.3em;
+}
+
+#header{
+    -fx-text-fill: #A9A9A9;
+    -fx-font-size: 2.2em;
+}
+
+#atomtxt{
+    -fx-font-size: 1.3em;
+}
+
+.label{
+    -fx-text-fill: #A9A9A9;
+}
+
+.text-field{
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: white;
+}
+
+.list-view {
+    -fx-background-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.scroll-bar{
+    -fx-border-width: 0;
+    -fx-border-color: #212121;
+    -fx-background-color: #212121;
+}
+
+.scroll-bar .thumb{
+    -fx-background-color: #353839;
+    -fx-background-radius: 5px;
+}
+
+.list-view .list-cell{
+    -fx-text-fill: #A9A9A9;
+    -fx-background-color: #212121;
+    -fx-border-width: 0.1;
+    -fx-border-color: #A9A9A9;
+}
+
+.list-view .list-cell:selected{
+    -fx-background-color: #616161;
+    -fx-text-fill: #EEEEEE; 
+}
+
+.button{
+    -fx-background-radius: 5;
+    -fx-background-color: #353839;
+    -fx-text-fill: #A9A9A9;
+}
+
+.button:hover{
+    -fx-background-color: #424242;    
+}
