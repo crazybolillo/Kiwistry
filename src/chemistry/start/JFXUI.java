@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2018 Antonio---https://github.com/AntonioBohne
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package chemistry.start;
 
 import chemistry.atoms.SQLReader;
@@ -21,8 +37,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import rendering.StyleLoader;
-import rendering.StyleLoader.STYLE_TYPE;
+import chemistry.resourceloader.StyleLoader;
+import chemistry.resourceloader.StyleLoader.STYLE_TYPE;
 
 /**
  *
@@ -54,16 +70,10 @@ public class JFXUI extends Application{
         headerTxt.setText("Atomic models");
         headerTxt.setId("header");
         headerTxt.setOnMouseClicked(e ->{
-            if(StyleLoader.getCurrentStyle() == STYLE_TYPE.LIGHT){
-                StyleLoader.setApplicationStyle(STYLE_TYPE.DARK);
-                sc.getStylesheets().remove(0);
-                sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
-            }
-            else{
-                StyleLoader.setApplicationStyle(STYLE_TYPE.LIGHT);
-                sc.getStylesheets().remove(0);
-                sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
-            }
+            Settings settings = new Settings();
+            settings.displayAndWait();
+            sc.getStylesheets().remove(0);
+            sc.getStylesheets().add(StyleLoader.getGeneralStyleSheetURL());
         });
         
         searchFld = new TextField();
@@ -102,6 +112,7 @@ public class JFXUI extends Application{
                         listVw.getSelectionModel().getSelectedItem());
                     sheet.display();
                 }catch(Exception ex){
+                    ex.printStackTrace();
                 }
             }
         });

@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2018 Antonio---https://github.com/AntonioBohne
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package chemistry.game;
 
 import chemistry.atoms.Atom;
@@ -58,8 +74,10 @@ public abstract class GameInterface {
      * is by faiing to read the embedded database inside the .jar file. This
      * is rare udner normal conditions and will probably only happen if the
      * .jar is corrupted.
+     * @throws java.lang.NoSuchFieldException
      */
-    protected List<Atom> getRandomAtoms() throws SQLException{
+    protected List<Atom> getRandomAtoms() throws SQLException, 
+            NoSuchFieldException{
         int atomicNumbers[] = 
                 new Random().ints(1, 119).distinct().limit(4).toArray();
         
