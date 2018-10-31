@@ -9,5 +9,8 @@ Free software designed to serve as a learning resource for chemistry related the
 * Trivia based games to test your knowledge.
 * Customizable GUI. 
 
+## How to use it
+Tested .jar files can be found under the release section. Latest .jar that matches the uploaded source code can be found on the root directory. All jar files need Java 8 or higher installed on the system to properly function.No setup needs to be done. Just run the program once downloaded.
+
 ## Development
 The source code is well documented so its easy to modify the program to better fit your needs. The underlying components/program logic were separated from the GUI as much as possible to allow easy modification and reuse. Adding support for different languages just requires adding the new information to the internal database and adding a new Enum to the LanguageLoader class found inside the ResourceLoader package.
