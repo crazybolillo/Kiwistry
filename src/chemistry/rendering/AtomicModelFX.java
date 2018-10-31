@@ -66,9 +66,7 @@ public class AtomicModelFX extends ResizableCanvas{
     public AtomicModelFX(double width, Atom atomo) {
         
         super();
-        //Set energy levels. Will be needed later to set the proportions.
-        levels = atomo.getElectronicConfig();
-        symbol = atomo.getSymbol();
+        this.setAtom(atomo);
         
         //For the atomic model to keep correct proportions it must be a square.
         this.setWidth(width);
@@ -78,11 +76,25 @@ public class AtomicModelFX extends ResizableCanvas{
     }
     
     /**
+     * Sets the atom that will be displayed. This method allows the Canvas
+     * to display an atom different from the one it was constructed with. This
+     * method does not modify the painted canvas in any way.<h3>To show the new
+     * atom's model call the paintModel method.</h3>
+     * @param atomo Atom's model that will be displayed next time the 
+     * paintModel method is called.
+     */
+    public void setAtom(Atom atomo){
+        levels = atomo.getElectronicConfig();
+        symbol = atomo.getSymbol();
+    }
+      
+    /**
      * Paints the atomic model of the atom. Must be called before it is displayed
      * to the user as the constructor does not automatically paint the model. 
      */
     public void paintModel() {
         this.utilProportions();
+        this.clearCanvas();
         this.drawNucleus(symbol);
         this.drawEnergyLevels();
         this.drawElectrons();
@@ -99,6 +111,10 @@ public class AtomicModelFX extends ResizableCanvas{
         lvlPercent = lvl;
         electPercent = elec;
     }
+    
+    /**
+     * Erases the whole canvas.
+     */
     private void clearCanvas() {
         GraphicsContext painter = this.getGraphicsContext2D();
         painter.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -246,7 +262,6 @@ public class AtomicModelFX extends ResizableCanvas{
     
     @Override
     protected void onResizeUpdate(){
-        clearCanvas();
         resizeCanvas(getWidth(), getHeight());
         paintModel();
     }

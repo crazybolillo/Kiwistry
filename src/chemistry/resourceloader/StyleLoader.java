@@ -53,15 +53,18 @@ public class StyleLoader {
     
     /**
      * Returns the type of enum associated to the description passed trough
-     * the parameters.
+     * the parameters. <h3>Non-case sensitive.</h3>
      * @param description Description that is tied to an enum.
-     * @return Enum type. If not found it will return a LIGHT enum
-     * by default.
+     * @return STYLE_TYPE enum which can be used to change the app's style.
+     * @throws NoSuchFieldException In case no enum with that description
+     * is found.
      */
-    public static STYLE_TYPE getType(String description){
-        if(description.equals(STYLE_TYPE.LIGHT.toString())) return STYLE_TYPE.LIGHT;
-        else if(description.equals(STYLE_TYPE.DARK.toString())) return STYLE_TYPE.DARK;
-        return STYLE_TYPE.LIGHT;
+    public static STYLE_TYPE getType(String description) throws NoSuchFieldException{
+        STYLE_TYPE styleList[] = STYLE_TYPE.values();
+        for(STYLE_TYPE style : styleList){
+            if(style.toString().equalsIgnoreCase(description)) return style;
+        }
+        throw new NoSuchFieldException("No style found for " + description);
     }
     
     /**

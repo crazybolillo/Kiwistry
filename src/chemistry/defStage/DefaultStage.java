@@ -16,6 +16,7 @@
  */
 package chemistry.defStage;
 
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
  * @author https://github.com/AntonioBohne
  */
 public class DefaultStage extends Stage{
+    
     public DefaultStage(){
         /*Image used was gathered from:
         https://www.iconfinder.com/icons/3775427/atom_atomic_molecule_science_icon_icon

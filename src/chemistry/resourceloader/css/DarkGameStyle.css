@@ -4,16 +4,9 @@
 }
 
 .label{
-	-fx-text-fill: #A9A9A9;
-}
-
-.button{
-	-fx-background-insets: 0;
-    -fx-background-color: #353839;
     -fx-text-fill: #A9A9A9;
 }
 
-.button:hover{
-	-fx-background-insets: 0;
+#choice:hover{
     -fx-background-color: #424242;    
 }

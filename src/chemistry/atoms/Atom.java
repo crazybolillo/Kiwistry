@@ -16,7 +16,7 @@
  */
 package chemistry.atoms;
 
-import chemistry.sql.SQLTracker;
+import chemistry.sql.SQLReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -58,9 +58,9 @@ public class Atom {
         
         else{
             atomicNumber = atomNum;
-            symbol = results.getString(SQLTracker.ATOM_SYMBOL_FIELD);
-            name = results.getString(SQLTracker.ATOM_NAME_FIELD);
-            atomicMass = results.getDouble(SQLTracker.ATOM_MASS_FIELD);
+            symbol = results.getString("symbol");
+            name = results.getString("name");
+            atomicMass = results.getDouble("atomicMass");
         }
         
         //Close result resources
@@ -77,56 +77,21 @@ public class Atom {
      * was found.
      */
     public Atom(String name) throws SQLException, NoSuchFieldException{
-        
-        String query = "SELECT atomicNumber, symbol FROM # WHERE name = ?"
-                + " COLLATE NOCASE";
-        query = query.replace("atomicNumber", SQLTracker.ATOM_NUM_FIELD);
-        query = query.replace("symbol", SQLTracker.ATOM_SYMBOL_FIELD);
-        query = query.replace("#", SQLTracker.getAtomNameTable());
-        query = query.replace("name", SQLTracker.ATOM_NAME_FIELD);
-        
+
         Connection con = SQLReader.getConnection();
-        
-        PreparedStatement stmt = con.prepareStatement(query);
-        stmt.setString(1, name);
-        
-        ResultSet results = stmt.executeQuery();
+        ResultSet results = SQLReader.getAtom(name, con);
         
         if(!results.isBeforeFirst()){
             results.close();
-            stmt.close();
             con.close();
             throw new NoSuchFieldException("No atom found for atomic number: "
                     + name);
         }
         this.name = name;
-        atomicNumber = results.getInt(SQLTracker.ATOM_NUM_FIELD);
-        symbol = results.getString(SQLTracker.ATOM_SYMBOL_FIELD);
-        results.close();
-        
-        //---------------------------------------
-        //Second query to gather the atomic mass.
-        //----------------------------------------
-        query = "SELECT atomicMass FROM mainProperties"
-                + " WHERE "
-                + "atomicNumber = ?";
-        query = query.replace("atomicMass", SQLTracker.ATOM_MASS_FIELD);
-        query = query.replace("mainProperties", SQLTracker.MAIN_TABLE);
-        query = query.replace("atomicNumber", SQLTracker.ATOM_NUM_FIELD);
-        
-        stmt = con.prepareStatement(query);
-        stmt.setInt(1, atomicNumber);
-        
-        ResultSet secResult = stmt.executeQuery();
-        if(!secResult.isBeforeFirst()){
-            stmt.close();
-            con.close();
-            throw new NoSuchFieldException("No atomic mass found for atomic "
-                    + "number: " + atomicNumber);
-        }
-        atomicMass = secResult.getDouble(SQLTracker.ATOM_MASS_FIELD);
-        secResult.close();
-        stmt.close();
+        atomicNumber = results.getInt("atomicNumber");
+        symbol = results.getString("symbol");
+        atomicMass = results.getDouble("atomicMass");
+        results.close(); 
         
         this.setElectronicConfiguration(con); //This method closes the connection.
     }
@@ -146,10 +111,9 @@ public class Atom {
     private void setElectronicConfiguration(Connection con) 
             throws SQLException, NoSuchFieldException{
         
-        String query = "SELECT * FROM confelec WHERE "
+        String query = "SELECT * FROM configElectronic"
+                + " WHERE "
                 + "atomicNumber = ?";
-        query = query.replace("confelec", SQLTracker.ELECTRONIC_TABLE);
-        query = query.replace("atomicNumber", SQLTracker.ATOM_NUM_FIELD);
         PreparedStatement stmt = con.prepareStatement(query);
         stmt.setInt(1, atomicNumber);
         
