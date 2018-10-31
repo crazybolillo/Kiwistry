@@ -1,9 +1,13 @@
-# JAtomicModels
-Application that displays information about atoms and generates 2D models of them. Based on JavaFX. The application provides a simple user interface to access atoms, their properties and their models. It also provides a simple guessing game so you can practice your knowledge about atoms.
+# AtomicModels
+Free software designed to serve as a learning resource for chemistry related themes like atoms and molecules. The app provides diagrams and data on the subjects mentioned before. It also provides trivia based games to test current knowledge and promote improvement. The source code has been designed to make it as easy as possible for users to make modifications in order to fit their needs. 
 
-![Alt text](images/Krypton.png?raw=true "Atomic model")
-<p align="center">
-  <img src="images/MainGUI.png?raw=true" alt="Main GUI"/>
-</p>
+## Features
+* Multi-language support (English and Spanish at the moment. Adding more languages is easy to do)
+* Information about all atoms (1-118) with respective 2D models of their structure. 
+* (Upcoming) Information on common molecules. 
+* (Upcoming) Lewis structures
+* Trivia based games to test your knowledge.
+* Customizable GUI. 
 
-The source code can be helpful for anyone trying to develop a Java application which deals with atoms, their attributes and their models. This application provides a simple embeeded database (sqlite3) that stores all the information about the atoms. It provides a very simple to use Java object which is initialized by simply typing out the atom´s name or atomic number. This object makes all the necessary queries to gather the atom´s attributes. A resizable Canvas can be created based on the atom. 
+## Development
+The source code is well documented so its easy to modify the program to better fit your needs. The underlying components/program logic were separated from the GUI as much as possible to allow easy modification and reuse. Adding support for different languages just requires adding the new information to the internal database and adding a new Enum to the LanguageLoader class found inside the ResourceLoader package.
