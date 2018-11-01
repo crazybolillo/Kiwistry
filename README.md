@@ -17,7 +17,7 @@ A Lite version which provides spanish/english language support, atoms' basic inf
 
 
 ## How to use it
-Tested .jar files can be found under the release section. Latest .jar that matches the uploaded source code can be found on the root directory. All jar files need Java 8 or higher installed on the system to properly function.No setup needs to be done. Just run the program once downloaded.
+Tested .jar files can be found under the release section. All jars need Java 8 or higher and JavaFX installed on the system. Currently the app does not ship the JavaFX library so if your Java installation does not include it you will also need to install that library. Once the app is finished a version with the JavaFX library will be available. (Java 11 and OpenJDK do not include it. Oracle's Java 8 JRE and JDK do include it.)
 
 ## Development
 All the source code is available and has been documented as much as possible to give anyone that wants to modify the app an easier time. The project is divided in six main packages. The "basicGUI" package consists of all the GUI resources that make up the Lite version of the app.The "kiwiGUI" package consists of all the GUI resources that makeup the "real" version of the app. The "rendering" package renders the atomic models while the "game package" stores all the trivia-game logic and the "sql" package manages the interaction with the embedded sqlite3 database that contains all relevant information. Finally a very imporant package consits of the LanguageLoader which manages the GUI translation to the selected language (currently supports English and Spanish).
