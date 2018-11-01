@@ -30,9 +30,8 @@ public class CanvasFrame {
     
     DefaultStage window;
     Scene sc;
-    GridPane layout;
     
-    AtomicModelFX canvas;
+    AtomicModelWrapper canvas;
     private double size;
     
     public CanvasFrame(Atom atomo) throws Exception {
@@ -40,31 +39,19 @@ public class CanvasFrame {
         size = 800;
         
         window = new DefaultStage();
-        layout = new GridPane();
-
-        canvas = new AtomicModelFX(size, atomo);
+        canvas = new AtomicModelWrapper(size, atomo);
+        canvas.setMaxSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        canvas.setMinSize(0, 0);
         
-        layout.getChildren().add(canvas);
-        
-        sc = new Scene(layout, size, size);
+        sc = new Scene(canvas, size, size);
         window.setScene(sc);
         window.setTitle(atomo.getName());
         window.setResizable(true);
-        
-        /**
-         * Binds the window size with the container. Effectively
-         * resizing the canvas together with the window if resized. The canvas
-         * has its own action listener that will resize automatically when it 
-         * detects its size has changed.
-         */
-        canvas.widthProperty().bind(sc.widthProperty());
-        canvas.heightProperty().bind(sc.heightProperty());
-        
+          
         }
     
     public void display() {
         window.show();
-        canvas.paintModel();
     }
     
     public void close() {

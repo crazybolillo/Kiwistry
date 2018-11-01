@@ -31,7 +31,6 @@ import chemistry.rendering.AtomicModelFX;
 import chemistry.rendering.CanvasFrame;
 import chemistry.rendering.ResizableLabel;
 import chemistry.resourceloader.LanguageLoader;
-import chemistry.resourceloader.StyleLoader;
 
 /**
  * This class is used to display information about an atom. It includes a

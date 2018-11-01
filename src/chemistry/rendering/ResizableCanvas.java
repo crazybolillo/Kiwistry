@@ -34,7 +34,7 @@ public abstract class ResizableCanvas extends Canvas{
             this.onResizeUpdate();
         });
     }
-    
+
     @Override 
     public boolean isResizable(){
         return true;

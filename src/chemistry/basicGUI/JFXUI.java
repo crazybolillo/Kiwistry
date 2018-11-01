@@ -17,9 +17,7 @@
 package chemistry.basicGUI;
 
 import chemistry.sql.SQLReader;
-import chemistry.basicGUI.JFXSheet;
 import chemistry.defStage.DefaultStage;
-import chemistry.basicGUI.AtomTrivia;
 import chemistry.resourceloader.LanguageLoader;
 import java.util.Random;
 import javafx.application.Application;
@@ -38,7 +36,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import chemistry.resourceloader.StyleLoader;
 
 /**
  *

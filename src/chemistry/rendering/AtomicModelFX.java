@@ -38,7 +38,7 @@ public class AtomicModelFX extends ResizableCanvas{
     private float nuclPercent = 0.30f;
     private float lvlPercent = 0.70f;
     private float electPercent = 0.05f;
-    private float fontPercent = 0.08f;
+    private float fontPercent = 0.1f;
     
     /**
      * Width that can be painted. It is always 10% smaller than the actual 

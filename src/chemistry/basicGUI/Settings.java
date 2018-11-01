@@ -2,7 +2,6 @@ package chemistry.basicGUI;
 
 import chemistry.defStage.DefaultStage;
 import chemistry.resourceloader.LanguageLoader;
-import chemistry.resourceloader.StyleLoader;
 import java.util.Arrays;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;

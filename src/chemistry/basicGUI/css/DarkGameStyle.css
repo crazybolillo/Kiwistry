@@ -1,0 +1,12 @@
+.root{
+    -fx-background-color: #212121;
+    -fx-font-family: "Roboto";
+}
+
+.label{
+    -fx-text-fill: #A9A9A9;
+}
+
+#choice:hover{
+    -fx-background-color: #424242;    
+}

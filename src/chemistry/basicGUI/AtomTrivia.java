@@ -30,7 +30,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import chemistry.rendering.ResizableLabel;
-import chemistry.resourceloader.StyleLoader;
 
 /**
  * This class provides the GUI to play an interactive trivia game about Atoms.

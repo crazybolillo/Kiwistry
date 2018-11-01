@@ -1,0 +1,17 @@
+#wrapperPane{
+    -fx-background-color: transparent;
+}
+
+#wrappedPreviewPane{
+    -fx-background-color: #34497c;
+    -fx-effect: dropshadow(three-pass-box, black, 5, 0, 0, 0);
+}
+
+#wrappedPreviewPane:hover{
+    -fx-background-color: #141d33;
+}
+
+#previewLbl{
+    -fx-text-fill: #C0C0C0;
+}
+
