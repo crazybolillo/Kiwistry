@@ -19,7 +19,6 @@ package chemistry.rendering;
 import chemistry.atoms.Atom;
 import chemistry.defStage.DefaultStage;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
 
 /**
  * This window contains a resizable canvas with the atomic model of the atom
