@@ -19,6 +19,7 @@
 *.tar.gz
 *.rar
 
+nbproject/
 dist/
 build/
 test/
