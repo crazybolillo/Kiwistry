@@ -46,4 +46,11 @@ public class PreviewWrapper extends GridPane{
         this.setPadding(new Insets(5));
     }
     
+    /**
+     * Returns the preview this PreviewWrapper is currently wrapping.
+     * @return Preview.
+     */
+    public Preview getPreview(){
+        return preview;
+    }
 }

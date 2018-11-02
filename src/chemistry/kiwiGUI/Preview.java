@@ -50,6 +50,19 @@ public class Preview <E extends Node> extends GridPane{
         
         GridBoiler.addRowConstraints(this, topSize, bottomSize);
         
+        this.addPreviewNode();
+        
+        GridPane.setConstraints(description, 0, 1);
+        this.getChildren().add(description);
+        
+        this.setCursor(Cursor.HAND);
+        this.setGridLinesVisible(true);
+    }
+    
+    /**
+     * Adds the node to the preview.
+     */
+    private void addPreviewNode(){
         GridPane.setConstraints(previewNode, 0, 0);
         GridPane.setHalignment(previewNode, HPos.CENTER);
         GridPane.setHgrow(previewNode, Priority.ALWAYS);
@@ -57,11 +70,6 @@ public class Preview <E extends Node> extends GridPane{
         GridPane.setVgrow(previewNode, Priority.ALWAYS);
         GridPane.setFillHeight(previewNode, true);
         this.getChildren().add(previewNode);
-        
-        GridPane.setConstraints(description, 0, 1);
-        this.getChildren().add(description);
-        
-        this.setCursor(Cursor.HAND);
     }
     
     /**
@@ -71,5 +79,24 @@ public class Preview <E extends Node> extends GridPane{
      */
     public void setLabelRatio(double ratio){
         this.description.setSizeToHeightRatio(ratio);
+    }
+    
+    /**
+     * Sets the text that sits below the preview node.
+     * @param text Text that will be displayed on the preview.
+     */
+    public void setLabelText(String text){
+        this.description.setText(text);
+    }
+    
+    /**
+     * Removes the current node being displayed and adds the node passed
+     * trough the parameters.
+     * @param node Node that will be displayed.
+     */
+    public void setDisplayedNode(E node){
+        this.getChildren().remove(previewNode);
+        previewNode = node;
+        this.addPreviewNode();
     }
 }

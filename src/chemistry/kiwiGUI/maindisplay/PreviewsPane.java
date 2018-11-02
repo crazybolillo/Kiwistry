@@ -22,46 +22,62 @@ import chemistry.kiwiGUI.PreviewWrapper;
 import chemistry.rendering.AtomicModelWrapper;
 import chemistry.utils.GridBoiler;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 /**
- *  
+ * Layout that shows a 3x3 grid of wrapped previews. By default the application
+ * starts in the Atoms' section so this PreviewPane displays random atomic
+ * models upon start.
  * @author https://github.com/AntonioBohne
  */
 public class PreviewsPane extends GridPane{
     
-    PreviewWrapper wrappedPreviews[];
+    /**
+     * Keeps track of all the preview wrappers.
+     */
+    private List<PreviewWrapper> wrappedPreviews;
     
     public PreviewsPane() throws SQLException, NoSuchFieldException, Exception{
 
         GridBoiler.addColumnConstraints(this, 33.33, 33.33, 33.33);
         GridBoiler.addRowConstraints(this, 33.33, 33.33, 33.33);
         
-        Preview preview[] = new Preview[9];
-        wrappedPreviews = new PreviewWrapper[preview.length];
-        for(int x = 0; x < preview.length; x++){
+        List<Preview> preview = new ArrayList<>();
+        wrappedPreviews = new ArrayList<>();
+        for(int x = 0; x < 9; x++){
             Atom atom = new Atom(new Random().nextInt(108) + 1 + x);
-            preview[x] = new Preview(new AtomicModelWrapper(50, atom),
-                    atom.getName(), 80, 20);
-            preview[x].setMaxSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-            preview[x].setMinSize(0, 0);
+            preview.add(new Preview(new AtomicModelWrapper(50, atom),
+                    atom.getName(), 80, 20));
+            preview.get(x).setMaxSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+            preview.get(x).setMinSize(0, 0);
             
-            wrappedPreviews[x] = new PreviewWrapper(preview[x]);
+            wrappedPreviews.add(new PreviewWrapper(preview.get(x)));
         }
         
         int y = 0;
-        for(int x = 0; x < wrappedPreviews.length; ){
-            for(int z = 0; z < 3 && x < wrappedPreviews.length; z++, x++){
-                GridPane.setConstraints(wrappedPreviews[x], z, y);
-                GridPane.setFillWidth(wrappedPreviews[x], true);
-                GridPane.setHgrow(wrappedPreviews[x], Priority.ALWAYS);
-                GridPane.setFillHeight(wrappedPreviews[x], true);
-                GridPane.setVgrow(preview[x], Priority.ALWAYS);
-                this.getChildren().add(wrappedPreviews[x]);
+        for(int x = 0; x < wrappedPreviews.size(); ){
+            for(int z = 0; z < 3 && x < wrappedPreviews.size(); z++, x++){
+                GridPane.setConstraints(wrappedPreviews.get(x), z, y);
+                GridPane.setFillWidth(wrappedPreviews.get(x), true);
+                GridPane.setHgrow(wrappedPreviews.get(x), Priority.ALWAYS);
+                GridPane.setFillHeight(wrappedPreviews.get(x), true);
+                GridPane.setVgrow(wrappedPreviews.get(x), Priority.ALWAYS);
+                this.getChildren().add(wrappedPreviews.get(x));
             }
             y++;
         }
+    }
+    
+    /**
+     * Returns the list of PreviewWrappers this pain contains. This allows
+     * the preview content to be changed as needed.
+     * @return List of PreviewWrappers the panel contains and displays.
+     */
+    public List<PreviewWrapper> getPanePreviews(){
+        return wrappedPreviews;
     }
 }

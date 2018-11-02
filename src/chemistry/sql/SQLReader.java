@@ -22,7 +22,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -37,15 +38,15 @@ import javafx.collections.ObservableList;
 public class SQLReader {
 
     /**
-     * Reads all the atom names from the database and groups them into an
-     * ObservableList of strings.
-     * @return ObservableList with all atomic names on the database.
+     * Reads all the atom names from the database and groups them into aa
+     * List of strings.
+     * @return List with all atomic names on the database.
      * @throws Exception This method should not throw any exception if the 
      * database has not been modified. It may throw exceptions if the sqlite
      * driver can not be found or if the database has changed and the query
      * made to it is no longer valid and returns nothing.
      */
-    public static ObservableList<String> getAtomNames() throws Exception {
+    public static List<String> getAtomNames() throws Exception {
         
         Connection con = SQLReader.getConnection();
         PreparedStatement stmt = con.prepareStatement("SELECT name "
@@ -55,7 +56,7 @@ public class SQLReader {
         
         if(!rs.isBeforeFirst()) throw new Exception("Atom names not found");
         
-        ObservableList<String> retVal = FXCollections.observableArrayList();
+        List<String> retVal = new ArrayList<>();
         while(rs.next()){
             retVal.add(rs.getString("name"));
         }

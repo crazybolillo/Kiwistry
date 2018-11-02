@@ -1,0 +1,11 @@
+#container{
+    -fx-background-color: #1f2c4c;
+}
+
+#unselectedItem:hover{
+    -fx-background-color: #141d33;
+}
+
+#selectedItem{
+    -fx-background-color: #53397a;
+}
