@@ -16,7 +16,7 @@
  */
 package chemistry.rendering;
 
-import chemistry.atoms.Atom;
+import chemistry.dataModel.Atom;
 import javafx.scene.layout.GridPane;
 
 /**

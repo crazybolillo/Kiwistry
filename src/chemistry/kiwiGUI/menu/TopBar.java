@@ -16,8 +16,8 @@
  */
 package chemistry.kiwiGUI.menu;
 
-import chemistry.kiwiGUI.MessageLoader;
-import chemistry.kiwiGUI.MessageLoader.MESSAGE_TYPE;
+import chemistry.kiwiGUI.VisualMessageQeue;
+import chemistry.kiwiGUI.VisualMessageQeue.MESSAGE_TYPE;
 import chemistry.utils.GridBoiler;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ import javafx.scene.layout.Priority;
  */
 public class TopBar extends  GridPane{
     
-    private TextField searchBar;
+    public TextField searchBar;
     public NodeGroup<Pane> sections;
     
     public TopBar(){
@@ -53,15 +53,16 @@ public class TopBar extends  GridPane{
         this.getStylesheets().add(this.getClass().getResource(
                 "topBarStyle.css").toExternalForm());
         GridBoiler.addRowConstraints(this, 100);
-        GridBoiler.addColumnConstraints(this, 28, 1, 15, 15, 15, 15, 15);
+        GridBoiler.addColumnConstraints(this, 33, 1, 16.5, 16.5, 16.5, 16.5);
         
         searchBar = new TextField();
         searchBar.setPromptText("Search");
         searchBar.setPrefWidth(Integer.MAX_VALUE);
         searchBar.setOnKeyReleased(e ->{
-            MessageLoader.sendMessage(MESSAGE_TYPE.SEARCH_FLD_EVT, 
+            VisualMessageQeue.sendMessage(MESSAGE_TYPE.SEARCH_FLD_EVT, 
                     searchBar.getText());
         });
+        
         
         GridPane.setConstraints(searchBar, 0, 0, 1, 3);
         GridPane.setHalignment(searchBar, HPos.LEFT);
@@ -69,16 +70,14 @@ public class TopBar extends  GridPane{
         this.getChildren().add(searchBar);
         
         List<ImageView> imgv = new ArrayList<>();
-        imgv.add(new ImageView(new Image(this.getClass().getResource(
-                "atomIcon.png").toExternalForm())));
-        imgv.add(new ImageView(new Image(this.getClass().getResource(
-                "moleculeIcon.png").toExternalForm())));
-        imgv.add(new ImageView(new Image(this.getClass().getResource(
-                "lewisIcon.png").toExternalForm())));
-        imgv.add(new ImageView(new Image(this.getClass().getResource(
-                "testIcon.png").toExternalForm())));
-        imgv.add(new ImageView(new Image(this.getClass().getResource(
-                "settingsIcon.png").toExternalForm())));
+        imgv.add(new ImageView(new Image(
+                "chemistry/kiwiGUI/res/atomIcon.png")));
+        imgv.add(new ImageView(new Image(
+                "chemistry/kiwiGUI/res/moleculeIcon.png")));
+        imgv.add(new ImageView(new Image(
+                "chemistry/kiwiGUI/res/testIcon.png")));
+        imgv.add(new ImageView(new Image(
+                "chemistry/kiwiGUI/res/settingsIcon.png")));
         
         List<BorderPane> tempList = new ArrayList<>();
         for(int x = 0; x < imgv.size(); x++){
@@ -104,9 +103,8 @@ public class TopBar extends  GridPane{
         
         sections.add(tempList.get(0), MESSAGE_TYPE.SHOW_ATOM_SCR);
         sections.add(tempList.get(1), MESSAGE_TYPE.SHOW_MOLECULE_SCR);
-        sections.add(tempList.get(2), MESSAGE_TYPE.SHOW_LEWIS_SCR);
-        sections.add(tempList.get(3), MESSAGE_TYPE.SHOW_TEST_SCR);
-        sections.add(tempList.get(4), MESSAGE_TYPE.SHOW_SETTINGS_SCR);
+        sections.add(tempList.get(2), MESSAGE_TYPE.SHOW_TEST_SCR);
+        sections.add(tempList.get(3), MESSAGE_TYPE.SHOW_SETTINGS_SCR);
         
         sections.setSelected(tempList.get(0));
     }

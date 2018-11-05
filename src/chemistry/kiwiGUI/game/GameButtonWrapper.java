@@ -14,47 +14,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package chemistry.kiwiGUI;
+package chemistry.kiwiGUI.game;
 
+import chemistry.kiwiGUI.Preview;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
+import javafx.scene.Cursor;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
 /**
- * Wraps the preview and adds a shadow effect to give a material design 
- * look.
+ *
  * @author https://github.com/AntonioBohne
  */
-public class PreviewWrapper {
+public class GameButtonWrapper {
 
     private GridPane layout;
-    private Preview preview;
+    private GameButton button;
  
-    public PreviewWrapper(Preview preview){
+    public GameButtonWrapper(GameButton button){
         
         layout = new GridPane();
         layout.setId("wrapperPane");
         
-        this.preview = preview;
-        this.preview.getPreviewLayout().setId("wrappedPreviewPane");
+        this.button = button;
+        this.button.setId("wrappedPreviewPane");
         
-        GridPane.setConstraints(this.preview.getPreviewLayout(), 0, 0);
-        GridPane.setHgrow(this.preview.getPreviewLayout(), Priority.ALWAYS);
-        GridPane.setVgrow(this.preview.getPreviewLayout(), Priority.ALWAYS);
-        layout.getChildren().add(this.preview.getPreviewLayout());
+        GridPane.setConstraints(this.button, 0, 0);
+        GridPane.setHgrow(this.button, Priority.ALWAYS);
+        GridPane.setVgrow(this.button, Priority.ALWAYS);
+        layout.getChildren().add(this.button);
         
         layout.getStylesheets().add("chemistry/kiwiGUI/WrappedPreviewStyle.css");
         layout.setPadding(new Insets(5));
+        layout.setCursor(Cursor.HAND);
     }
     
     /**
-     * Returns the preview this PreviewWrapper is currently wrapping.
+     * Returns the Button this ButtonWrapper is currently wrapping.
      * @return Preview.
      */
-    public Preview getPreview(){
-        return preview;
+    public GameButton getPreview(){
+        return button;
     }
     
     /**
@@ -64,4 +65,5 @@ public class PreviewWrapper {
     public Pane getLayout(){
         return layout;
     }
+    
 }

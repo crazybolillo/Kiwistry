@@ -24,8 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  * This class manages the interactions with the database that holds all
@@ -54,12 +52,37 @@ public class SQLReader {
         stmt.setString(1, LanguageLoader.getCurrentLanguage().getAbbreviation());
         ResultSet rs = stmt.executeQuery();
         
-        if(!rs.isBeforeFirst()) throw new Exception("Atom names not found");
+        if(!rs.isBeforeFirst()) 
+            throw new Exception("Atom names not found");
         
         List<String> retVal = new ArrayList<>();
-        while(rs.next()){
+        while(rs.next())
             retVal.add(rs.getString("name"));
-        }
+        
+        rs.close();
+        stmt.close();
+        con.close();
+        
+        return retVal;
+    }
+    
+    public static List<String> getAtomSymbols() throws Exception {
+        
+        Connection con = SQLReader.getConnection();
+        PreparedStatement stmt = con.prepareStatement("SELECT symbol FROM"
+                + "mainProperties");
+        ResultSet rs = stmt.executeQuery();
+        if(rs.isBeforeFirst())
+            throw new Exception("Atom symbols not found");
+        
+        List<String> retVal = new ArrayList<>();
+        while(rs.next())
+            retVal.add(rs.getString("symbol"));
+             
+        
+        rs.close();
+        stmt.close();
+        con.close();
         
         return retVal;
     }
@@ -99,7 +122,8 @@ public class SQLReader {
     public static ResultSet getAtom(int atomicNum, 
             Connection con) throws SQLException{
         
-        String query = "SELECT atomicMass, name, symbol " 
+        String query = "SELECT atomicMass, name, symbol, atomGroup, atomPeriod, "
+                + "electronegativity " 
                 + "FROM mainProperties " 
                 + "JOIN atomNames "
                 + "ON atomNames.atomicNumber = mainProperties.atomicNumber " 
@@ -135,7 +159,8 @@ public class SQLReader {
     public static ResultSet getAtom(String atomName, Connection con)
             throws SQLException{
         
-        String query = "SELECT atomicMass, atomicNumber, symbol "
+        String query = "SELECT atomicMass, atomicNumber, symbol, atomGroup,"
+                + "atomPeriod, electronegativity "
                 + "FROM mainProperties "  
                 + "WHERE atomicNumber = "
                 + "(SELECT atomicNumber FROM atomNames WHERE name = ?"

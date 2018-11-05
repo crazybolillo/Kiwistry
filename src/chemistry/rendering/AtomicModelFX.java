@@ -16,7 +16,7 @@
  */
 package chemistry.rendering;
 
-import chemistry.atoms.Atom;
+import chemistry.dataModel.Atom;
 import java.util.List;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;

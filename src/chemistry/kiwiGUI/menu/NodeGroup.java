@@ -16,8 +16,8 @@
  */
 package chemistry.kiwiGUI.menu;
 
-import chemistry.kiwiGUI.MessageLoader;
-import chemistry.kiwiGUI.MessageLoader.MESSAGE_TYPE;
+import chemistry.kiwiGUI.VisualMessageQeue;
+import chemistry.kiwiGUI.VisualMessageQeue.MESSAGE_TYPE;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Node;
@@ -63,7 +63,7 @@ public class NodeGroup <E extends Node> {
     public void add(E element, MESSAGE_TYPE message, String... varargs){
         element.setOnMouseClicked(e ->{
             this.setSelected(element);
-            MessageLoader.sendMessage(message, varargs);
+            VisualMessageQeue.sendMessage(message, varargs);
         });
         this.elements.add(element);
     }

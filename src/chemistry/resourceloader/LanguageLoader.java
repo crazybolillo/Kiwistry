@@ -88,7 +88,7 @@ public class LanguageLoader {
     /**
      * Keeps track of the current language the loader has. 
      */
-    private static LANGUAGE currLang = LANGUAGE.ENG;
+    private static LANGUAGE currLang = LANGUAGE.ESP;
     
     /**
      * Sets the language used so that the GUI reacts accordingly.
@@ -97,6 +97,7 @@ public class LanguageLoader {
     public static void setCurrentLanguage(LANGUAGE lang){
         currLang = lang;
         appLanguage = LanguageLoader.loadAppLanguage();
+        AtomBuffer.updateBuffers();
     }
     
     /**
