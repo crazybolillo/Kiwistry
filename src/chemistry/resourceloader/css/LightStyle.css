@@ -1,0 +1,130 @@
+/*---------------------------------
+STYLES THE MAIN DISPLAY. THIS INCLUDES
+THE BACKGROUND COLOR, TEXT FIELD AND
+COMBO BOX TO CHOOSE THE LANGUAGE.
+----------------------------------*/
+.root{
+    -fx-background-color: #e8e8e8;
+}
+
+.text-field{
+    -fx-font-size: 1.4em;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: black;
+}
+
+.combo-box{
+    -fx-background-color: #c4c4c4;
+    -fx-text-fill: black;
+    -fx-font-size: 1.6em;
+}
+
+.combo-box:hover{
+    -fx-background-color: #adadad;
+}
+
+.combo-box-popup .list-view{
+    -fx-background-color: #c4c4c4;
+}  
+
+.combo-box .list-cell{
+    -fx-background: #c4c4c4;
+    -fx-text-fill: black;
+}
+
+/*-------------------------------
+STYLES THE TOP MENU
+--------------------------------*/
+#container{
+    -fx-background-color: #e8e8e8;
+}
+
+#unselectedItem:hover{
+    -fx-background-color: #adadad;
+}
+
+#selectedItem{
+    -fx-background-color: #adadad;
+}
+
+.label{
+    -fx-text-fill: black;
+}
+
+/*----------------------
+STYLES THE SETTINGS MENU
+-------------------------*/
+#settingsLbl{
+    -fx-font-size: 2em;
+}
+
+#settingsBtn{
+    -fx-text-fill: black;
+    -fx-background-color: #c4c4c4;
+    -fx-font-size: 1.6em;
+}
+
+#settingsBtn:hover{
+    -fx-background-color: #adadad;
+}
+
+/*---------------------------------
+STYLES THE GAME WINDOW
+-----------------------------------*/
+.progress-bar .bar{
+    -fx-background-radius: 30px;
+}
+
+#goodbar .bar{
+    -fx-background-color: #388E3C;
+}
+
+#mediumbar .bar{
+    -fx-background-color: #FBC02D;
+}
+
+#badbar .bar{
+    -fx-background-color: #d32f2f;
+}
+
+.progress-bar .track{
+    -fx-background-color: transparent;
+}
+
+#correctBtn{
+    -fx-background-color: #43A047;
+    -fx-effect: dropshadow(three-pass-box, black, 5, 0, 0, 0);
+}
+
+#topGameBar{
+    -fx-background-color: #d6d6d6;
+    -fx-effect: dropshadow(three-pass-box, black, 5, 0, 0, 0);
+}
+
+#lifeBarText{
+    -fx-text-fill: black;
+}
+
+/*-----------------------------------
+STYLES ALL THE WRAPPED PREVIEWS. THESE
+ARE USED TO DISPLAY ATOM'S MODELS
+AND THEIR NAMES IN THE MAIN DISPLAY'
+------------------------------------*/
+#wrapperPane{
+    -fx-background-color: transparent;
+}
+
+#wrappedPreviewPane{
+    -fx-background-color: #d6d6d6;
+    -fx-effect: dropshadow(three-pass-box, black, 5, 0, 0, 0);
+}
+
+#wrappedPreviewPane:hover{
+    -fx-background-color: #adadad;
+}
+
+#previewLbl{
+    -fx-text-fill: black;
+}

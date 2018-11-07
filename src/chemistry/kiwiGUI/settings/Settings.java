@@ -18,6 +18,7 @@ package chemistry.kiwiGUI.settings;
 
 import chemistry.kiwiGUI.VisualMessageQeue;
 import chemistry.kiwiGUI.VisualMessageQeue.MESSAGE_TYPE;
+import chemistry.resourceloader.KiwiStyleLoader;
 import chemistry.resourceloader.LanguageLoader;
 import java.util.Arrays;
 import javafx.geometry.HPos;
@@ -37,6 +38,9 @@ public class Settings extends GridPane{
     private Label langLbl;
     private ComboBox langBox;
     
+    private Label themeLbl;
+    private ComboBox themeBox;
+    
     private Button saveBtn;
     
     public Settings(){
@@ -47,19 +51,34 @@ public class Settings extends GridPane{
         
         langBox = new ComboBox();
         langBox.setPrefWidth(350);
-        langBox.setPromptText("Language");
         Arrays.asList(LanguageLoader.LANGUAGE.values()).forEach(
                 e -> langBox.getItems().add(e.toString()));
         langBox.getSelectionModel().select(
                 LanguageLoader.getCurrentLanguage().toString());
         
+        themeLbl = new Label();
+        themeLbl.setId("settingsLbl");
+        themeLbl.setText(LanguageLoader.getAppTranslation("themeLbl"));
+        
+        themeBox = new ComboBox();
+        themeBox.setPrefWidth(350);
+        Arrays.asList(KiwiStyleLoader.STYLE.values()).forEach(
+                e -> themeBox.getItems().add(e.toString()));
+        themeBox.getSelectionModel().select(
+                KiwiStyleLoader.getCurrentStyle().toString());
+        
         saveBtn = new Button();
+        saveBtn.setId("settingsBtn");
         saveBtn.setPrefWidth(270);
         saveBtn.setText(LanguageLoader.getAppTranslation("saveLbl"));
         saveBtn.setOnAction(e ->{
             try{;
                 LanguageLoader.setCurrentLanguage(LanguageLoader.getLanguage(
                     langBox.getSelectionModel().getSelectedItem().toString()));
+                
+                KiwiStyleLoader.setStyle(KiwiStyleLoader.getStyle(themeBox.
+                        getSelectionModel().getSelectedItem().toString()));
+                
                 VisualMessageQeue.sendMessage(MESSAGE_TYPE.SHOW_SETTINGS_SCR);
             }catch(NoSuchFieldException ex){
                 ex.printStackTrace();
@@ -72,11 +91,19 @@ public class Settings extends GridPane{
         GridPane.setHalignment(langLbl, HPos.LEFT);
         this.getChildren().add(langLbl);
         
-        GridPane.setConstraints(langBox, 0, 2);
+        GridPane.setConstraints(langBox, 0, 1);
         GridPane.setHalignment(langBox, HPos.CENTER);
         this.getChildren().add(langBox);
         
-        GridPane.setConstraints(saveBtn, 0, 3);
+        GridPane.setConstraints(themeLbl, 0, 2);
+        GridPane.setHalignment(themeLbl, HPos.LEFT);
+        this.getChildren().add(themeLbl);
+        
+        GridPane.setConstraints(themeBox, 0, 3);
+        GridPane.setHalignment(themeBox, HPos.CENTER);
+        this.getChildren().add(themeBox);
+        
+        GridPane.setConstraints(saveBtn, 0, 4);
         GridPane.setHalignment(saveBtn, HPos.CENTER);
         this.getChildren().add(saveBtn);
     }

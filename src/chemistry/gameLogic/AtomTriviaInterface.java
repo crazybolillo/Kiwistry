@@ -48,9 +48,9 @@ public abstract class AtomTriviaInterface extends TriviaInterface{
      * while harder levels limit themselves to bigger and not so common atoms.
      */
     public enum ATOM_DIFFICULTY{
-        EASY(1, 30, 2),
-        MEDIUM(10, 60, 3),
-        HARD(30, 118, 5);
+        EASY(1, 40, 2, 7),
+        MEDIUM(10, 60, 3, 5),
+        HARD(30, 118, 4, 3);
         
         /**
          * Smallest atomic number an atom can have for that difficulty level.
@@ -67,15 +67,24 @@ public abstract class AtomTriviaInterface extends TriviaInterface{
          */
         private int maxQuestion;
         
-        private ATOM_DIFFICULTY(int min, int max, int maxQ){
+        /**
+         * Keeps track of the necessary streak the user must have to get an 
+         * extra life. An streak is the amount of correct answers the user
+         * has so far entered in a row.
+         */
+        private int streakBonus;
+        
+        private ATOM_DIFFICULTY(int min, int max, int maxQ, int streakBonus){
             minAtom = min;
             maxAtom = max;
             maxQuestion = maxQ;
+            this.streakBonus = streakBonus;
         }
         
         public int getMinAtomicNumber(){return minAtom;}
         public int getMaxAtomicNumber(){return maxAtom;}
         public int getMaxQuestionIndex(){return maxQuestion;}
+        public int getStreakBonus(){return streakBonus;}
     }
     
     protected  ATOM_DIFFICULTY getDifficultyBasedOnScore(int score){
@@ -110,22 +119,16 @@ public abstract class AtomTriviaInterface extends TriviaInterface{
             
         List<Atom> retVal = new ArrayList<>();
         HashSet groupSet = new HashSet();
-        HashSet periodSet = new HashSet();
         for(int x = 0; x < 4; x++){
             Atom atom = new Atom(atomicNumbers[x]);
             retVal.add(atom);
             groupSet.add(atom.getGroup());
-            periodSet.add(atom.getPeriod());
         }
         
         if(dif == ATOM_DIFFICULTY.EASY)
             return retVal;
         
-        else if(dif == ATOM_DIFFICULTY.MEDIUM && groupSet.size() == retVal.size())
-            return retVal;
-        
-        else if(dif == ATOM_DIFFICULTY.HARD && groupSet.size() == retVal.size()
-                && periodSet.size() == retVal.size())
+        else if(groupSet.size() == retVal.size())
             return retVal;
         }
     } 
@@ -218,14 +221,10 @@ public abstract class AtomTriviaInterface extends TriviaInterface{
         retVal.add(new QuestionMap(Atom.class.getDeclaredMethod("getName"),
                 Atom.class.getDeclaredMethod("getGroup"),
                     LanguageLoader.getAppTranslation("groupLbl")));
-        
-        retVal.add(new QuestionMap(Atom.class.getDeclaredMethod("getName"),
-                Atom.class.getDeclaredMethod("getPeriod"),
-                    LanguageLoader.getAppTranslation("periodLbl")));
-        
+             
         retVal.add(new QuestionMap(Atom.class.getDeclaredMethod("getName"),
                 Atom.class.getDeclaredMethod("getAtomicMass"),
-                    LanguageLoader.getAppTranslation("atomicMassLbl")));
+                    LanguageLoader.getAppTranslation("massLbl")));
         
         return retVal;
     }

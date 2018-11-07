@@ -51,6 +51,15 @@ public abstract class TriviaInterface {
     protected int getLiveCount(){return liveCount;}
     
     /**
+     * Keeps track of how many right answers the user has entered in a row.
+     * Used to determine whether an extra life should be awarded to the player
+     * or not.
+     */
+    protected int streak = 0;
+    protected void setStreakCount(int streak){this.streak = streak;}
+    protected int getStreakCount(){return streak;}
+    
+    /**
      * Keeps track of the score the user has.
      */
     protected int scoreCount = 0;

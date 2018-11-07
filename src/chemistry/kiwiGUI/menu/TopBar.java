@@ -18,6 +18,7 @@ package chemistry.kiwiGUI.menu;
 
 import chemistry.kiwiGUI.VisualMessageQeue;
 import chemistry.kiwiGUI.VisualMessageQeue.MESSAGE_TYPE;
+import chemistry.resourceloader.KiwiStyleLoader;
 import chemistry.utils.GridBoiler;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +51,9 @@ public class TopBar extends  GridPane{
         
         super();
         this.setPadding(new Insets(15, 0, 15, 5));        
-        this.getStylesheets().add(this.getClass().getResource(
-                "topBarStyle.css").toExternalForm());
+        this.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         GridBoiler.addRowConstraints(this, 100);
-        GridBoiler.addColumnConstraints(this, 33, 1, 16.5, 16.5, 16.5, 16.5);
+        GridBoiler.addColumnConstraints(this, 33, 1, 22, 22, 22);
         
         searchBar = new TextField();
         searchBar.setPromptText("Search");
@@ -72,8 +72,8 @@ public class TopBar extends  GridPane{
         List<ImageView> imgv = new ArrayList<>();
         imgv.add(new ImageView(new Image(
                 "chemistry/kiwiGUI/res/atomIcon.png")));
-        imgv.add(new ImageView(new Image(
-                "chemistry/kiwiGUI/res/moleculeIcon.png")));
+//        imgv.add(new ImageView(new Image(
+//                "chemistry/kiwiGUI/res/moleculeIcon.png")));
         imgv.add(new ImageView(new Image(
                 "chemistry/kiwiGUI/res/testIcon.png")));
         imgv.add(new ImageView(new Image(
@@ -102,9 +102,9 @@ public class TopBar extends  GridPane{
         sections = new NodeGroup<>();
         
         sections.add(tempList.get(0), MESSAGE_TYPE.SHOW_ATOM_SCR);
-        sections.add(tempList.get(1), MESSAGE_TYPE.SHOW_MOLECULE_SCR);
-        sections.add(tempList.get(2), MESSAGE_TYPE.SHOW_TEST_SCR);
-        sections.add(tempList.get(3), MESSAGE_TYPE.SHOW_SETTINGS_SCR);
+//        sections.add(tempList.get(1), MESSAGE_TYPE.SHOW_MOLECULE_SCR);
+        sections.add(tempList.get(1), MESSAGE_TYPE.SHOW_TEST_SCR);
+        sections.add(tempList.get(2), MESSAGE_TYPE.SHOW_SETTINGS_SCR);
         
         sections.setSelected(tempList.get(0));
     }

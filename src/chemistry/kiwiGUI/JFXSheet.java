@@ -27,6 +27,7 @@ import javafx.scene.layout.GridPane;
 import chemistry.rendering.AtomicModelWrapper;
 import chemistry.rendering.CanvasFrame;
 import chemistry.rendering.ResizableLabel;
+import chemistry.resourceloader.KiwiStyleLoader;
 import chemistry.resourceloader.LanguageLoader;
 
 /**
@@ -91,8 +92,7 @@ public class JFXSheet{
         
         //Set scene
         sc = new Scene(layout, 400, 650);
-        sc.getStylesheets().add(this.getClass().getResource("AppStyle.css")
-                .toExternalForm());
+        sc.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         
         window = new DefaultStage();
         window.setScene(sc);

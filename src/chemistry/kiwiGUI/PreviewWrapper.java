@@ -16,8 +16,8 @@
  */
 package chemistry.kiwiGUI;
 
+import chemistry.resourceloader.KiwiStyleLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -45,7 +45,7 @@ public class PreviewWrapper {
         GridPane.setVgrow(this.preview.getPreviewLayout(), Priority.ALWAYS);
         layout.getChildren().add(this.preview.getPreviewLayout());
         
-        layout.getStylesheets().add("chemistry/kiwiGUI/WrappedPreviewStyle.css");
+        layout.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         layout.setPadding(new Insets(5));
     }
     

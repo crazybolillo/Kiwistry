@@ -18,6 +18,8 @@ package chemistry.kiwiGUI.game;
 
 import chemistry.dataModel.Atom;
 import chemistry.rendering.ResizableLabel;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 /**
  * This class is almost identical to a button. The only two differences is that
@@ -68,5 +70,10 @@ public class GameButton extends ResizableLabel {
         }
         else 
             this.textProperty().set(obj.toString());
+    }
+    
+    public DoubleProperty kiwiid(String str){
+        this.setId(str);
+        return new SimpleDoubleProperty();
     }
 }

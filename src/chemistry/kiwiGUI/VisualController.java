@@ -17,7 +17,6 @@
 package chemistry.kiwiGUI;
 
 import chemistry.kiwiGUI.game.KiwiAtomTrivia;
-import chemistry.gameLogic.AtomTriviaInterface;
 import chemistry.gameLogic.AtomTriviaInterface.ATOM_DIFFICULTY;
 import chemistry.kiwiGUI.defStage.DefaultStage;
 import chemistry.kiwiGUI.VisualMessageQeue.KiwiMessage;
@@ -26,6 +25,7 @@ import chemistry.kiwiGUI.maindisplay.AtomsPreview;
 import chemistry.kiwiGUI.maindisplay.TestsPreview;
 import chemistry.kiwiGUI.menu.TopBar;
 import chemistry.kiwiGUI.settings.Settings;
+import chemistry.resourceloader.KiwiStyleLoader;
 import chemistry.resourceloader.LanguageLoader;
 import java.sql.SQLException;
 import javafx.application.Application;
@@ -72,13 +72,15 @@ public class VisualController extends Application{
         this.addToMainDisplay(mainDisplay.getLayout());
 
         sc = new Scene(container, 800, 600);
-        sc.getStylesheets().add(this.getClass().getResource("AppStyle.css").
-                toExternalForm());
+        sc.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         window = new DefaultStage();
-        window.setTitle("MASTER KIWI-DEVELOPMENT");
+        window.setTitle("Kiwimistry");
         window.setScene(sc);
         window.setResizable(true);
         window.show();
+        window.setOnCloseRequest(e ->{
+            System.exit(0);
+        });
         
         window.setMinWidth(800);
         window.setMinHeight(600);
@@ -206,9 +208,14 @@ public class VisualController extends Application{
     
     /**
      * Changes the main display to a settings layout where the user
-     * can configure the application.
+     * can configure the application. This is called whenever the user
+     * saves the settings or goes to the settings.
      */
     private void onSettingsEvent(){
+        sc.getStylesheets().remove(0);
+        sc.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
+        topBar.getStylesheets().set(0, KiwiStyleLoader.getStyleSheet());
+                        
         topBar.searchBar.setDisable(true);
         container.getChildren().remove(1);
         this.addToMainDisplay(new Settings());

@@ -18,6 +18,7 @@ package chemistry.rendering;
 
 import chemistry.dataModel.Atom;
 import chemistry.kiwiGUI.defStage.DefaultStage;
+import chemistry.resourceloader.KiwiStyleLoader;
 import javafx.scene.Scene;
 
 /**
@@ -43,7 +44,7 @@ public class CanvasFrame {
         canvas.setMinSize(0, 0);
         
         sc = new Scene(canvas, size, size);
-        sc.getStylesheets().add("chemistry/kiwiGUI/AppStyle.css");
+        sc.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         window.setScene(sc);
         window.setTitle(atomo.getName());
         window.setResizable(true);

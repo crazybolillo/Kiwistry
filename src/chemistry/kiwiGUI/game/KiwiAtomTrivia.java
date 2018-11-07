@@ -26,10 +26,10 @@ import java.util.Random;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import chemistry.rendering.ResizableLabel;
+import chemistry.resourceloader.KiwiStyleLoader;
+import javafx.geometry.Insets;
 
 /**
  * This class provides the GUI to play an interactive trivia game about Atoms.
@@ -44,10 +44,13 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
     private Scene sc;
     
     private GridPane container;
+    
     private GridPane topPane;
+    private GridPane topPaneBar;
+    
     private GridPane bottomPane;
     
-    private List<GridPane> liveWrapper;
+    private TextProgressBar lifeBar;
     
     private ResizableLabel clueLbl;
     private ResizableLabel scoreLbl;
@@ -81,8 +84,8 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
        GridPane.setConstraints(bottomPane, 0, 1);
        container.getChildren().add(bottomPane);
        
-        sc = new Scene(container, 400, 480);
-        sc.getStylesheets().add("chemistry/kiwiGUI/AppStyle.css");
+        sc = new Scene(container, 400, 490);
+        sc.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         
         window = new DefaultStage();
         window.setWidth(sc.getWidth());
@@ -101,6 +104,12 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
             else
                 topPane.setHgap(0);
         });
+        window.heightProperty().addListener(e ->{
+            if(window.getHeight() <= 500)
+                lifeBar.bar.setPrefHeight(50);
+            else
+                lifeBar.bar.setPrefHeight(80);
+        });
     }
        
     /**
@@ -111,54 +120,54 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
     private void setTopPanel(){
     
         topPane = new GridPane();
-        GridBoiler.addColumnConstraints(topPane, 15, 15, 15, 30, 25);
+        topPane.setPadding(new Insets(10));
+        GridBoiler.addColumnConstraints(topPane, 100);
         GridBoiler.addRowConstraints(topPane, 25, 75);
+       
+        topPaneBar = new GridPane();
+        topPaneBar.setId("topGameBar");
+        topPaneBar.setPadding(new Insets(0, 10, 0, 10));
+        GridBoiler.addColumnConstraints(topPaneBar, 10, 10, 10, 40, 30);
+        GridBoiler.addRowConstraints(topPaneBar, 100);
         
-       /*Creating hearts which signify how many lives the player has left. They
-        are wrapped in a GridPane so that their width and height are binded to
-        it, allowing for resizing.*/
-        liveWrapper = new ArrayList<>();
-        for(int x = 0; x < 3; x++){
-            ImageView img = new ImageView(new Image(
-                    "chemistry/kiwiGUI/res/fillHeart.png"));
-            img.setFitWidth(50);
-            img.setFitHeight(50);
-            img.setPreserveRatio(true);
-            
-            GridPane pane = new GridPane();
-            pane.setAlignment(Pos.CENTER);
-            pane.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-            pane.setMinSize(0, 0);
-            liveWrapper.add(pane);
-            
-            GridPane.setConstraints(img, 0, 0);
-            GridPane.setHalignment(img, HPos.CENTER);
-            pane.getChildren().add(img);
-            
-            img.fitWidthProperty().bind(pane.widthProperty());
-            img.fitHeightProperty().bind(pane.heightProperty());
-            
-            GridPane.setConstraints(pane, x, 0);
-            topPane.getChildren().add(pane);
-        }
+        lifeBar = new TextProgressBar(); 
+        lifeBar.bar.setProgress(1);
+        lifeBar.bar.setPrefHeight(40);
+        lifeBar.bar.setMinHeight(0);
+        lifeBar.bar.setPrefWidth(Integer.MAX_VALUE);
+        lifeBar.bar.setId("goodbar");
+        
+        lifeBar.text.setSizeToHeightRatio(2);
+        lifeBar.text.setText(Integer.toString(this.getLiveCount()));
+        lifeBar.text.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        lifeBar.text.setMinSize(0, 0);
+        lifeBar.text.setAlignment(Pos.CENTER);
+        
+        GridPane.setConstraints(lifeBar.pane, 0, 0, 3, 1);
+        topPaneBar.getChildren().add(lifeBar.pane);
+
+        scoreLbl = new ResizableLabel("000");
+        scoreLbl.setSizeToHeightRatio(1.5);
+        scoreLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        scoreLbl.setMinSize(0, 0);
+        scoreLbl.setAlignment(Pos.CENTER);
+       
+        GridPane.setConstraints(scoreLbl, 4, 0);
+        GridPane.setHalignment(scoreLbl, HPos.RIGHT);
+        topPaneBar.getChildren().add(scoreLbl);
+        
+        GridPane.setConstraints(topPaneBar, 0, 0);
+        topPane.getChildren().add(topPaneBar);
+        
+        
         clueLbl = new ResizableLabel();
         clueLbl.setSizeToHeightRatio(5);
         clueLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
         clueLbl.setMinSize(0, 0);
         clueLbl.setAlignment(Pos.CENTER);
         
-        GridPane.setConstraints(clueLbl, 0, 1, 5, 1);
+        GridPane.setConstraints(clueLbl, 0, 1, 1, 1);
         topPane.getChildren().add(clueLbl);
-        
-        scoreLbl = new ResizableLabel("000");
-        scoreLbl.setSizeToHeightRatio(1.5);
-        scoreLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        scoreLbl.setMinSize(0, 0);
-        scoreLbl.setAlignment(Pos.CENTER);
-        
-        GridPane.setConstraints(scoreLbl, 4, 0);
-        GridPane.setHalignment(scoreLbl, HPos.RIGHT);
-        topPane.getChildren().add(scoreLbl);
         
         topPane.setHgap(10);
     }
@@ -185,6 +194,7 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
            choiceBtn.add(new GameButtonWrapper(btn));
        }
        choiceLbl = new ResizableLabel();
+       choiceLbl.setSizeToHeightRatio(1.5);
        choiceLbl.setPrefSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
        choiceLbl.setMinSize(0, 0);
        choiceLbl.setAlignment(Pos.CENTER);
@@ -228,9 +238,9 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
     /**
      * Generates a list containing four random atoms and sets the first one
      * as the correct answer. It then proceeds to select a random QuestionMap 
- object which contains the getter that will display the clue, the getter
- that will display the possible answers and a String that tells the user
- what needs to be guessed.
+     * object which contains the getter that will display the clue, the getter
+     * that will display the possible answers and a String that tells the user
+     * what needs to be guessed.
      */
     @Override
     protected void setQuestion() {     
@@ -271,45 +281,94 @@ public class KiwiAtomTrivia extends AtomTriviaInterface{
         }
         else{
             this.removeLife(); 
-            this.setQuestion();
         }  
     }
     
     /**
+     * Temporarily disables the buttons in order to highlight wht was the
+     * correct answer for two seconds. 
      * Substracts one from the live count inherited by the superclass. Changes
      * the utmost right filled heart  to an empty heart. If it detects 
-     * that the liveCount has reached 0 it invokes the finishGame method.
+     * that the liveCount has reached 0 it invokes the finishGame method. 
+     * Resest the user's streak count to cero.
      */
     @Override
     protected void removeLife() {
-        this.setLiveCount(this.getLiveCount() - 1);
-        if(this.getLiveCount() <= 0){
-            this.finishGame();
-            return;
+               
+        this.setStreakCount(0);
+        
+        int btnIndex = 0;
+        for(int x = 0; x < choiceBtn.size(); x++){
+            choiceBtn.get(x).getPreview().setMouseTransparent(true);
+            if(this.verifyAnswer(choiceBtn.get(x).getPreview().getAtom()))
+                btnIndex = x;
         }
-        int col = 0 + Math.abs(this.getLiveCount());
         
-        liveWrapper.get(col).getChildren().remove(0);
-        ImageView imgv = new ImageView(new Image(
-                "chemistry/kiwiGUI/res/emptyHeart.png"));
-        imgv.setPreserveRatio(true);
-        imgv.setFitWidth(45);
-        imgv.setFitHeight(45);
+        final int finBtnIndex = btnIndex;
         
-        GridPane.setConstraints(imgv, col, 0);
-        liveWrapper.get(col).getChildren().add(imgv);
-        imgv.fitWidthProperty().bind(liveWrapper.get(col).widthProperty());
-        imgv.fitHeightProperty().bind(liveWrapper.get(col).heightProperty());
+        RepeatTask highlight = new RepeatTask(6, 333) {
+            @Override
+            public void setTask() {
+                if(choiceBtn.get(finBtnIndex).getPreview().getId().
+                        equals("correctBtn"))
+                    choiceBtn.get(finBtnIndex).getPreview().setId(
+                        "wrappedPreviewPane");
+                else
+                    choiceBtn.get(finBtnIndex).getPreview().setId(
+                        "correctBtn");  
+            }
+        };
+        
+        highlight.hasFinished.addListener(e ->{
+            
+            this.setLiveCount(this.getLiveCount() - 1);
+            if(this.getLiveCount() <= 0){
+                this.finishGame();
+                return;
+            } 
+
+            this.updateLife();
+            
+            for(GameButtonWrapper btn : choiceBtn)
+                btn.getPreview().setMouseTransparent(false);
+            this.setQuestion();
+        });
+        
+        highlight.startTimer();
     }
     
     /**
+     * Updates the color of the life bar depending on the live count.
+     */
+    private void updateLife(){
+        lifeBar.text.setText(Integer.toString(this.getLiveCount()));
+        if(this.getLiveCount() >= 3)
+                lifeBar.bar.setId("goodbar");
+        
+       if(this.getLiveCount() == 2)
+                lifeBar.bar.setId("mediumbar");
+        
+        if(this.getLiveCount() == 1)
+            lifeBar.bar.setId("badbar"); 
+    }
+        
+    /**
      * Updates the score by one. Adds the necessary zeros (1 or 2) to make the
      * score measure at least 3 numbers. If the score measures 3 or more
-     * characters no zeros are added.
+     * characters no zeros are added. Checks if the user has a long enough
+     * streak to be awarded an extra life. If he does then the life is
+     * awarded, the lifebar updated and the streak count reseted to cero.
      */
     @Override
     protected void updateScore(){
         this.setScore(this.getScore() + 1);
+        this.setStreakCount(this.getStreakCount() + 1);
+        if(this.getStreakCount() >= this.difficulty.getStreakBonus()){
+            this.setStreakCount(0);
+            this.setLiveCount(this.getLiveCount() + 1);
+            this.updateLife();
+        }       
+        
         String score = Integer.toString(this.getScore());
         switch(score.length()){
             case 1:

@@ -16,7 +16,7 @@
  */
 package chemistry.kiwiGUI.game;
 
-import chemistry.kiwiGUI.Preview;
+import chemistry.resourceloader.KiwiStyleLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.layout.GridPane;
@@ -45,7 +45,7 @@ public class GameButtonWrapper {
         GridPane.setVgrow(this.button, Priority.ALWAYS);
         layout.getChildren().add(this.button);
         
-        layout.getStylesheets().add("chemistry/kiwiGUI/WrappedPreviewStyle.css");
+        layout.getStylesheets().add(KiwiStyleLoader.getStyleSheet());
         layout.setPadding(new Insets(5));
         layout.setCursor(Cursor.HAND);
     }
