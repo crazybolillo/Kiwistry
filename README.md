@@ -19,7 +19,7 @@ So far the application has been tested on Windows and Linux machines with Java 8
 * Customizable GUI (different themes/color schemes to choose from). 
 
 ## Current state
-Currently the application supports 
+Currently the application supports atoms. It is able to display all relevant information about them and users are able to play the trivia games based on them. Support for molecules (total of 50 molecules will be added) is being worked on right now.
 
 
 ## Development
