@@ -5,7 +5,9 @@ Free software designed to serve as a learning resource for chemistry related the
 
 ## How to use it
 You just need to download the latest .jar file from the release section and run the application. If your computer does not have JavaFX (OpenJDK and anything newer than JDK 8) you will need to download the JavaFX SDK and run the application trough the command line with the following command:
+
 ```java --module -path $YOUR_PATH_TO_FX_LIB --add-modules=javafx.controls -jar TheJarName.jar```
+
 So far the application has been tested on Windows and Linux machines with Java 8 and no problems have been found. It has also been tested on a Linux machine with JDK 11 and the JavaFX SDK succesfully by using the command above.
 
 ## Features
