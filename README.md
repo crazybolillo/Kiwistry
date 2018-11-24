@@ -13,14 +13,10 @@ So far the application has been tested on Windows and Linux machines with Java 8
 ## Features
 * Multi-language support (English and Spanish at the moment. Adding more languages is easy to do)
 * Information about all atoms (1-118) with respective 2D models of their structure. 
-* (Upcoming) Information on common molecules. 
-* (Upcoming) Lewis structures
 * Trivia based games to test your knowledge.
 * Customizable GUI (different themes/color schemes to choose from). 
-
-## Current state
-Currently the application supports atoms. It is able to display all relevant information about them and users are able to play the trivia games based on them. Support for molecules (total of 50 molecules will be added) is being worked on right now.
-
+* (Upcoming, god knows when) Information on common molecules. 
+* (Upcoming, god knows when) Lewis structures
 
 ## Development
 All the source code is available and has been documented. A big part of the application depends on the embedded database found under the sql package. It provides all the information about atoms, moecules and all the different translations for GUI elements. The app is based on a message driven system where most GUI elements just send messages to a Visual Controller that processes them. Resources like .css stylesheets or translations for GUI elements are all acessed trough specific classes, this means that the whole app is synchronized whenever a different style or language is chosen. This also means that adding new .css or languages takes minutes.
