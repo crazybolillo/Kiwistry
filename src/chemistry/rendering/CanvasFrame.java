@@ -17,7 +17,7 @@
 package chemistry.rendering;
 
 import chemistry.dataModel.Atom;
-import chemistry.kiwiGUI.defStage.DefaultStage;
+import chemistry.kiwiGUI.DefaultStage;
 import chemistry.resourceloader.KiwiStyleLoader;
 import javafx.scene.Scene;
 

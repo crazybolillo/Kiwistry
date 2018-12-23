@@ -17,7 +17,6 @@
 package chemistry.kiwiGUI;
 
 import chemistry.dataModel.Atom;
-import chemistry.kiwiGUI.defStage.DefaultStage;
 import chemistry.utils.GridBoiler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

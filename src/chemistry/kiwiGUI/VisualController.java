@@ -18,7 +18,6 @@ package chemistry.kiwiGUI;
 
 import chemistry.kiwiGUI.game.KiwiAtomTrivia;
 import chemistry.gameLogic.AtomTriviaInterface.ATOM_DIFFICULTY;
-import chemistry.kiwiGUI.defStage.DefaultStage;
 import chemistry.kiwiGUI.VisualMessageQeue.KiwiMessage;
 import chemistry.kiwiGUI.maindisplay.PreviewsBase;
 import chemistry.kiwiGUI.maindisplay.AtomsPreview;

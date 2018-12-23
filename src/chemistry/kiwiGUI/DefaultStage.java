@@ -14,26 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package chemistry.dataModel;
+package chemistry.kiwiGUI;
 
-import java.util.List;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 /**
- * Data model that stores information about a Molecule. It stores a table
- * which contains the atoms that form the molecule and the amount of them.
+ * Default window used all troughout the program in order to display the app´s
+ * icon.
  * @author https://github.com/AntonioBohne
  */
-public class Molecule {
-
-    /**
-     * Describes the type of bond a molecule has.
-     */
-    public enum BOND_TYPE{
-        COVALENT,
-        COVALENT_POLAR,
-        IONIC;
-    }
+public class DefaultStage extends Stage{
     
-    private List<AtomToken> atomTable;
-    private BOND_TYPE bond;
+    public DefaultStage(){
+        this.getIcons().add(new Image("chemistry/kiwiGUI/res/atomIcon.png"));
+    }
 }

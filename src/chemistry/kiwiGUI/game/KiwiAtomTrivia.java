@@ -19,7 +19,7 @@ package chemistry.kiwiGUI.game;
 import chemistry.utils.GridBoiler;
 import chemistry.dataModel.Atom;
 import chemistry.gameLogic.AtomTriviaInterface;
-import chemistry.kiwiGUI.defStage.DefaultStage;
+import chemistry.kiwiGUI.DefaultStage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
